@@ -1,7 +1,6 @@
 package org.demo.wpplugin.layers.exporters;
 
 import org.demo.wpplugin.layers.DemoCustomLayer;
-import org.demo.wpplugin.layers.DemoLayer;
 import org.pepsoft.minecraft.Chunk;
 import org.pepsoft.worldpainter.Dimension;
 import org.pepsoft.worldpainter.Platform;
@@ -69,7 +68,7 @@ public class DemoCustomLayerExporter extends AbstractLayerExporter<DemoCustomLay
         for (int xInChunk = 0; xInChunk < 16; xInChunk++) {
             for (int zInChunk = 0; zInChunk < 16; zInChunk++) {
                 final int xInTile = xOffset + xInChunk, zInTile = zOffset + zInChunk;
-                final int layerValue = tile.getLayerValue(DemoLayer.INSTANCE, xInTile, zInTile);
+                //final int layerValue = tile.getLayerValue(DemoLayer.INSTANCE, xInTile, zInTile);
                 // TODO: modify the Chunk as required according to the layer value
             }
         }
@@ -139,7 +138,7 @@ public class DemoCustomLayerExporter extends AbstractLayerExporter<DemoCustomLay
         final long seed = (dimension.getSeed() << 8) ^ ((long) exportedArea.x << 4) ^ exportedArea.y;
         for (int x = area.x; x < (area.x + area.width); x++) {
             for (int y = area.y; y < (area.y + area.height); y++) {
-                final int layerValue = dimension.getLayerValueAt(DemoLayer.INSTANCE, x, y);
+                //final int layerValue = dimension.getLayerValueAt(DemoLayer.INSTANCE, x, y);
                 // TODO: modify the MinecraftWorld as required according to the layer value
             }
         }
@@ -182,7 +181,7 @@ public class DemoCustomLayerExporter extends AbstractLayerExporter<DemoCustomLay
         final long seed = (dimension.getSeed() << 8) ^ ((long) exportedArea.x << 4) ^ exportedArea.y;
         for (int x = area.x; x < (area.x + area.width); x++) {
             for (int y = area.y; y < (area.y + area.height); y++) {
-                final int layerValue = dimension.getLayerValueAt(DemoLayer.INSTANCE, x, y);
+                //final int layerValue = dimension.getLayerValueAt(DemoLayer.INSTANCE, x, y);
                 // TODO: modify the MinecraftWorld as required according to the layer value
             }
         }
