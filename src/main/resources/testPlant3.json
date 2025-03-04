@@ -1,0 +1,10 @@
+{
+  "root_name": {
+    "group_1":{
+      "lobelia": "verdantvibes:lobelia",
+      "periwinkle": "verdantvibes:periwinkle",
+      "candy_tuft": "verdantvibes:candy_tuft",
+      "snake_plant": "verdantvibes:snake_plant"
+    }
+  }
+}

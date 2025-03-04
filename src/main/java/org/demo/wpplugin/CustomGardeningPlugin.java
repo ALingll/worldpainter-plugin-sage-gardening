@@ -1,18 +1,13 @@
 package org.demo.wpplugin;
 
-import org.demo.wpplugin.layers.DemoCustomLayer;
-import org.demo.wpplugin.layers.editors.DemoCustomLayerEditor;
+import org.demo.wpplugin.layers.GardeningLayer;
+import org.demo.wpplugin.layers.editors.GardeningLayerEditor;
 import org.pepsoft.worldpainter.Platform;
 import org.pepsoft.worldpainter.layers.CustomLayer;
 import org.pepsoft.worldpainter.layers.Layer;
 import org.pepsoft.worldpainter.layers.LayerEditor;
-import org.pepsoft.worldpainter.objects.WPObject;
-import org.pepsoft.worldpainter.operations.Operation;
 import org.pepsoft.worldpainter.plugins.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
@@ -27,7 +22,7 @@ import static org.demo.wpplugin.Version.VERSION;
  * you rename or copy it, be sure to keep that file up-to-date.
  */
 @SuppressWarnings("unused") // Instantiated by WorldPainter
-public class DemoWPPlugin extends AbstractPlugin implements
+public class CustomGardeningPlugin extends AbstractPlugin implements
         // This demo has the plugin class implementing all of these, but they may also be implemented by separate
         // classes, as long as each class implements Plugin and is mentioned in the org.pepsoft.worldpainter.plugins
         // registry file
@@ -40,7 +35,7 @@ public class DemoWPPlugin extends AbstractPlugin implements
     /**
      * The plugin class must have a default (public, no arguments) constructor.
      */
-    public DemoWPPlugin() {
+    public CustomGardeningPlugin() {
         super(NAME, VERSION);
     }
 
@@ -57,8 +52,8 @@ public class DemoWPPlugin extends AbstractPlugin implements
     @SuppressWarnings("unchecked") // Guaranteed by if statement
     @Override
     public <L extends Layer> LayerEditor<L> createLayerEditor(Platform platform, Class<L> layerType) {
-        if (layerType == DemoCustomLayer.class) {
-            return (LayerEditor<L>) new DemoCustomLayerEditor(platform);
+        if (layerType == GardeningLayer.class) {
+            return (LayerEditor<L>) new GardeningLayerEditor(platform);
         } else {
             return null;
         }
@@ -72,6 +67,6 @@ public class DemoWPPlugin extends AbstractPlugin implements
     static final String NAME = "Demo WP Plugin";
 
     //private static final List<Layer> LAYERS = singletonList(DemoLayer.INSTANCE);
-    private static final List<Class<? extends CustomLayer>> CUSTOM_LAYERS = singletonList(DemoCustomLayer.class);
+    private static final List<Class<? extends CustomLayer>> CUSTOM_LAYERS = singletonList(GardeningLayer.class);
 
 }

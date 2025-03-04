@@ -1,22 +1,26 @@
 package org.demo.wpplugin.layers.exporters;
 
-import org.demo.wpplugin.layers.DemoCustomLayer;
+import org.demo.wpplugin.layers.GardeningLayer;
+import org.demo.wpplugin.myplants.CustomPlant;
+import org.demo.wpplugin.myplants.PlantElement;
 import org.pepsoft.minecraft.Chunk;
+import org.pepsoft.minecraft.Material;
 import org.pepsoft.worldpainter.Dimension;
 import org.pepsoft.worldpainter.Platform;
 import org.pepsoft.worldpainter.Tile;
 import org.pepsoft.worldpainter.exporting.*;
 import org.pepsoft.worldpainter.layers.Layer;
+import org.pepsoft.worldpainter.layers.bo2.Bo2ObjectProvider;
 import org.pepsoft.worldpainter.layers.exporters.ExporterSettings;
 
 import javax.vecmath.Point3i;
 import java.awt.*;
-import java.util.EnumSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
 import static org.pepsoft.worldpainter.exporting.SecondPassLayerExporter.Stage.ADD_FEATURES;
 import static org.pepsoft.worldpainter.exporting.SecondPassLayerExporter.Stage.CARVE;
+import static org.pepsoft.worldpainter.layers.exporters.WPObjectExporter.renderObject;
 
 /**
  * The exporter is responsible for applying the layer to the map when the world is being Exported by WorldPainter.
@@ -34,8 +38,8 @@ import static org.pepsoft.worldpainter.exporting.SecondPassLayerExporter.Stage.C
  * arguments) constructor. You could also override the {@link Layer#getRenderer()} method if you want to do something
  * more complicated.
  */
-public class DemoCustomLayerExporter extends AbstractLayerExporter<DemoCustomLayer> implements FirstPassLayerExporter, SecondPassLayerExporter, IncidentalLayerExporter {
-    public DemoCustomLayerExporter(Dimension dimension, Platform platform, ExporterSettings settings, DemoCustomLayer layer) {
+public class GardeningLayerExporter extends AbstractLayerExporter<GardeningLayer> implements SecondPassLayerExporter, IncidentalLayerExporter {
+    public GardeningLayerExporter(Dimension dimension, Platform platform, ExporterSettings settings, GardeningLayer layer) {
         super(dimension, platform, settings, layer);
     }
 
@@ -58,21 +62,20 @@ public class DemoCustomLayerExporter extends AbstractLayerExporter<DemoCustomLay
      * @param tile The {@code Tile} that the current chunk belongs to. Get the layer values from this object.
      * @param chunk The {@code Chunk} that is currently being created. Apply your changes to this object.
      */
-    @Override
-    public void render(Tile tile, Chunk chunk) {
-        // TODO finish settings support with custom settings and settings editor
-
-        // Create a local seed to ensure the results are deterministic, yet vary by world seed and by chunk
-        final long seed = (dimension.getSeed() << 8) ^ ((long) chunk.getxPos() << 4) ^ chunk.getzPos();
-        final int xOffset = (chunk.getxPos() & 7) << 4, zOffset = (chunk.getzPos() & 7) << 4;
-        for (int xInChunk = 0; xInChunk < 16; xInChunk++) {
-            for (int zInChunk = 0; zInChunk < 16; zInChunk++) {
-                final int xInTile = xOffset + xInChunk, zInTile = zOffset + zInChunk;
-                //final int layerValue = tile.getLayerValue(DemoLayer.INSTANCE, xInTile, zInTile);
-                // TODO: modify the Chunk as required according to the layer value
-            }
-        }
-    }
+    //@Override
+    //public void render(Tile tile, Chunk chunk) {
+    //    // TODO finish settings support with custom settings and settings editor
+    //    // Create a local seed to ensure the results are deterministic, yet vary by world seed and by chunk
+    //    final long seed = (dimension.getSeed() << 8) ^ ((long) chunk.getxPos() << 4) ^ chunk.getzPos();
+    //    final int xOffset = (chunk.getxPos() & 7) << 4, zOffset = (chunk.getzPos() & 7) << 4;
+    //    for (int xInChunk = 0; xInChunk < 16; xInChunk++) {
+    //        for (int zInChunk = 0; zInChunk < 16; zInChunk++) {
+    //            final int xInTile = xOffset + xInChunk, zInTile = zOffset + zInChunk;
+    //            //final int layerValue = tile.getLayerValue(DemoLayer.INSTANCE, xInTile, zInTile);
+    //            // TODO: modify the Chunk as required according to the layer value
+    //        }
+    //    }
+    //}
 
     // SecondPassLayerExporter
 
@@ -132,18 +135,18 @@ public class DemoCustomLayerExporter extends AbstractLayerExporter<DemoCustomLay
      * that straddle region borders. The {@code Fixup}s will be invoked once the second pass is complete for this region
      * and all surrounding regions.
      */
-    @Override
-    public List<Fixup> carve(Rectangle area, Rectangle exportedArea, MinecraftWorld minecraftWorld) {
-        // Create a local seed to ensure the results are deterministic, yet vary by world seed and by region
-        final long seed = (dimension.getSeed() << 8) ^ ((long) exportedArea.x << 4) ^ exportedArea.y;
-        for (int x = area.x; x < (area.x + area.width); x++) {
-            for (int y = area.y; y < (area.y + area.height); y++) {
-                //final int layerValue = dimension.getLayerValueAt(DemoLayer.INSTANCE, x, y);
-                // TODO: modify the MinecraftWorld as required according to the layer value
-            }
-        }
-        return null; // Or return Fixups for creating structures that cross region borders, if that is hard to do in one go
-    }
+    //@Override
+    //public List<Fixup> carve(Rectangle area, Rectangle exportedArea, MinecraftWorld minecraftWorld) {
+    //    // Create a local seed to ensure the results are deterministic, yet vary by world seed and by region
+    //    final long seed = (dimension.getSeed() << 8) ^ ((long) exportedArea.x << 4) ^ exportedArea.y;
+    //    for (int x = area.x; x < (area.x + area.width); x++) {
+    //        for (int y = area.y; y < (area.y + area.height); y++) {
+    //            //final int layerValue = dimension.getLayerValueAt(DemoLayer.INSTANCE, x, y);
+    //            // TODO: modify the MinecraftWorld as required according to the layer value
+    //        }
+    //    }
+    //    return null; // Or return Fixups for creating structures that cross region borders, if that is hard to do in one go
+    //}
 
     /**
      * This method will be invoked once for every region as it is being created during an Export, after the first pass
@@ -179,13 +182,49 @@ public class DemoCustomLayerExporter extends AbstractLayerExporter<DemoCustomLay
     public List<Fixup> addFeatures(Rectangle area, Rectangle exportedArea, MinecraftWorld minecraftWorld) {
         // Create a local seed to ensure the results are deterministic, yet vary by world seed and by region
         final long seed = (dimension.getSeed() << 8) ^ ((long) exportedArea.x << 4) ^ exportedArea.y;
+        //testInit();
+        final Bo2ObjectProvider objectProvider = layer.getObjectProvider(platform);
+        objectProvider.setSeed(seed);
         for (int x = area.x; x < (area.x + area.width); x++) {
             for (int y = area.y; y < (area.y + area.height); y++) {
                 //final int layerValue = dimension.getLayerValueAt(DemoLayer.INSTANCE, x, y);
+                if(dimension.getBitLayerValueAt(layer,x,y)){
+                    CustomPlant plant = (CustomPlant) objectProvider.getObject();
+                    if(plant!=null)
+                        renderObject(minecraftWorld, dimension, platform, plant, x, y, dimension.getIntHeightAt(x,y) + 1, false);
+                    //minecraftWorld.setMaterialAt(x,y, dimension.getIntHeightAt(x,y)+1,Material.get("verdantvibes:lobelia"));
+                }
                 // TODO: modify the MinecraftWorld as required according to the layer value
             }
         }
         return null; // Or return Fixups for creating structures that cross region borders, if that is hard to do in one go
+    }
+
+    private void testInit() {
+        layer.setPlant(
+                CustomPlant.getBuilder()
+                        .setName("verdantvibes")
+                        .setDomain("lobelia")
+                        .pushBack(new PlantElement(Material.get("verdantvibes:lobelia")))
+                        .setEnableRandom(false).build(),
+                2
+        );
+        layer.setPlant(
+                CustomPlant.getBuilder()
+                        .setName("verdantvibes")
+                        .setDomain("periwinkle")
+                        .pushBack(new PlantElement(Material.get("verdantvibes:periwinkle")))
+                        .setEnableRandom(false).build(),
+                1
+        );
+        layer.setPlant(
+                CustomPlant.getBuilder()
+                        .setName("verdantvibes")
+                        .setDomain("candy_tuft")
+                        .pushBack(new PlantElement(Material.get("verdantvibes:candy_tuft")))
+                        .setEnableRandom(false).build(),
+                1
+        );
     }
 
     // IncidentalLayerExporter

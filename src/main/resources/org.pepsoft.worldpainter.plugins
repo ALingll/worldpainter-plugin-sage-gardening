@@ -2,6 +2,6 @@
   "name": "Demo WorldPainter Plugin",
   "version": "${project.version}",
   "classes": [
-    "org.demo.wpplugin.DemoWPPlugin"
+    "org.demo.wpplugin.CustomGardeningPlugin"
   ]
 }

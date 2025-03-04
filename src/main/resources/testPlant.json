@@ -1,0 +1,34 @@
+{
+  "root_name": {
+    "group_1":{
+      "lobelia": "verdantvibes:lobelia",
+      "periwinkle": [
+        "verdantvibes:periwinkle"
+      ],
+      "candy_tuft": [
+        {
+          "block":"verdantvibes:candy_tuft",
+          "properties": {
+            "flower_amount": [1,2,3,4],
+            "facing": ["north","south","east","west"]
+          }
+        }
+      ],
+      "snake_plant": {
+        "settings": {
+          "global_properties": {
+            "afacing": ["north","south","east","west"]
+          }
+        },
+        "data": [
+          {
+            "block": "verdantvibes:snake_plant",
+            "properties": {
+              "facing": "#afacing"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
