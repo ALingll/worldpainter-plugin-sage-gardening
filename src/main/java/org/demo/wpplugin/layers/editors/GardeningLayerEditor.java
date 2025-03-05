@@ -40,7 +40,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         tabbedPane = new JTabbedPane();
         setMinimumSize(new Dimension(200,300));
 
-        loadJsonSettings("testPlant.json");
+        loadJsonSettings("testPlant4.json");
 
         // 在窗口中加入标签页容器
         add(tabbedPane, BorderLayout.CENTER);

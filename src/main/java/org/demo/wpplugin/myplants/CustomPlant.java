@@ -42,7 +42,6 @@ public class CustomPlant implements WPObject {
         this.palette.add(new PlantElement(material));
         this.enableRandom = true;
         nextObject();
-        this.enableRandom = false;
     }
 
     public CustomPlant(String name, String domain, String material){
@@ -51,7 +50,6 @@ public class CustomPlant implements WPObject {
         this.palette.add(new PlantElement(Material.get(material)));
         this.enableRandom = true;
         nextObject();
-        this.enableRandom = false;
     }
 
     public CustomPlant(String name, String domain, PlantElement material){
@@ -60,7 +58,6 @@ public class CustomPlant implements WPObject {
         this.palette.add(material);
         this.enableRandom = true;
         nextObject();
-        this.enableRandom = false;
     }
 
     public String getFullName(){
@@ -83,6 +80,9 @@ public class CustomPlant implements WPObject {
         if(!enableRandom)
             return this;
         this.random = random;
+        globalProperties.forEach((key,value)->{
+            value.first.replace(0,value.first.length(),value.second.get(random.nextInt(value.second.size())));
+        });
         int height = palette.size();
         dimension.z = height;
         blockSpace = new int[1][1][height];

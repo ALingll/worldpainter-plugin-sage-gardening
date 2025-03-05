@@ -1,0 +1,38 @@
+{
+  "root_name": {
+    "group_1":{
+      "sunflower": [
+        {
+          "block": "minecraft:sunflower",
+          "properties": {
+            "half": "lower"
+          }
+        },
+        {
+          "block": "minecraft:sunflower",
+          "properties": {
+            "half": "lower"
+          }
+        },
+        {
+          "block": "minecraft:sunflower",
+          "properties": {
+            "half": "lower"
+          }
+        },
+        {
+          "block": "minecraft:sunflower",
+          "properties": {
+            "half": "lower"
+          }
+        },
+        {
+          "block": "minecraft:sunflower",
+          "properties": {
+            "half":"upper"
+          }
+        }
+      ]
+    }
+  }
+}

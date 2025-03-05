@@ -27,7 +27,6 @@ public class PlantElement {
         properties.forEach((key, value)->{
             result[0] = result[0]
                     .withProperty(key,value.get(random.nextInt(value.size())).toString());});
-        System.out.println(result[0]);
         return result[0];
     }
 
