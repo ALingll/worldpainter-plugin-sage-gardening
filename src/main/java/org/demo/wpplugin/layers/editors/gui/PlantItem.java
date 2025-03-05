@@ -29,6 +29,8 @@ public class PlantItem extends JPanel {
         // 初始化JSpinner，设置数字范围和步长
         SpinnerNumberModel model = new SpinnerNumberModel(0, 0, 100, 1); // 默认值为0，最小值0，最大值100，步长1
         spinner = new JSpinner(model);
+        spinner.setMinimumSize(new Dimension(80,Integer.MIN_VALUE));
+        spinner.setMaximumSize(new Dimension(80,Integer.MAX_VALUE));
         add(spinner);
 
         // 初始化显示数字的标签
@@ -38,6 +40,29 @@ public class PlantItem extends JPanel {
         // 监听JSpinner值变化，更新数字标签
         spinner.addChangeListener(e -> numberLabel.setText(String.valueOf(spinner.getValue())));
         spinner.addChangeListener(e -> this.fireWeightChangedEvent());
+
+        // 创建 GroupLayout
+        GroupLayout layout = new GroupLayout(this);
+        setLayout(layout);
+
+        // 让 GroupLayout 使用默认间距
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+
+        layout.setHorizontalGroup(
+                layout.createSequentialGroup()
+                        .addComponent(nameLabel) // 左对齐
+                        .addGap(10, 30, Short.MAX_VALUE) // 让右侧对齐
+                        .addComponent(spinner)
+                        .addComponent(numberLabel)
+        );
+
+        layout.setVerticalGroup(
+                layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(nameLabel)
+                        .addComponent(spinner)
+                        .addComponent(numberLabel)
+        );
     }
 
     // 获取JSpinner的值（可以根据需要添加更多的方法）
@@ -73,6 +98,11 @@ public class PlantItem extends JPanel {
         for (WeightChangedListener listener : listeners) {
             listener.wightChanged(event);
         }
+    }
+
+    @Override
+    public String toString(){
+        return getClass().getName() + "@" + Integer.toHexString(hashCode());
     }
 
     public static void main(String[] args) {

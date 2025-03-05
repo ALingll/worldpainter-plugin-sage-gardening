@@ -1,7 +1,9 @@
 package org.demo.wpplugin.layers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.demo.wpplugin.layers.exporters.GardeningLayerExporter;
 import org.demo.wpplugin.myplants.CustomPlant;
+import org.demo.wpplugin.utils.JsonUtils;
 import org.pepsoft.worldpainter.Dimension;
 import org.pepsoft.worldpainter.Platform;
 import org.pepsoft.worldpainter.exporting.LayerExporter;
@@ -11,6 +13,7 @@ import org.pepsoft.worldpainter.layers.bo2.Bo2ObjectProvider;
 import org.pepsoft.worldpainter.layers.exporters.ExporterSettings;
 import org.pepsoft.worldpainter.objects.WPObject;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -89,13 +92,23 @@ public class GardeningLayer extends CustomLayer {
     private static final long serialVersionUID = 1L;
 
 
+    private Map<CustomPlant, Integer> plantMap = new HashMap<>() ;
+    private Map<String, JsonNode> usedJsons = new HashMap<>();
+
+
+    public void putJsonNode(String fileName, JsonNode jsonNode){usedJsons.put(fileName, jsonNode);}
+
+    public void setUsedJsons(Map<String, JsonNode> map){usedJsons = map;}
+
+    public Map<String, JsonNode> getUsedJsons() {
+        return usedJsons;
+    }
+
+    public Map<CustomPlant, Integer> getPlantMap(){return plantMap;}
+
     public void setPlantMap(Map<CustomPlant, Integer> plantMap) {
         this.plantMap = plantMap;
     }
-
-    private Map<CustomPlant, Integer> plantMap = new HashMap<>() ;
-
-    public Map<CustomPlant, Integer> getPlantMap(){return plantMap;}
 
     public Bo2ObjectProvider getObjectProvider(Platform platform) {
         List<CustomPlant> customPlantList = new ArrayList<>(plantMap.keySet());
@@ -167,14 +180,18 @@ public class GardeningLayer extends CustomLayer {
 
     @Override
     public String toString(){
-        return plantMap.toString();
+        Map<String,Integer> map = new HashMap<>();
+        plantMap.forEach((key,value)->map.put(key.getFullName(),value));
+        return map.toString();
     }
 
     @Override
     public GardeningLayer clone() {
         GardeningLayer layer = new GardeningLayer();
         layer.plantMap = new HashMap<>();
-        layer.plantMap.putAll(this.plantMap);
+        this.plantMap.forEach((key,value)-> layer.plantMap.put(key,value));
+        layer.usedJsons = new HashMap<>();
+        layer.usedJsons.putAll(this.usedJsons);
         return layer;
     }
 }
