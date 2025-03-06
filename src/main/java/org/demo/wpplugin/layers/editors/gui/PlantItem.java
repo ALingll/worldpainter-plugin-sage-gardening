@@ -19,46 +19,38 @@ public class PlantItem extends JPanel {
 
     public PlantItem(String id, String labelText) {
         this.id = id;
-        // 设置布局为FlowLayout，使子组件横向排列
-        setLayout(new FlowLayout(FlowLayout.LEFT));
+        setOpaque(false); // 透明背景，防止影响布局
 
-        // 初始化组件并添加到面板
         nameLabel = new JLabel(labelText);
-        add(nameLabel);
+        spinner = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        numberLabel = new JLabel("0.00 %");
+        numberLabel.setPreferredSize(new Dimension(80, 25));
+        numberLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
-        // 初始化JSpinner，设置数字范围和步长
-        SpinnerNumberModel model = new SpinnerNumberModel(0, 0, 100, 1); // 默认值为0，最小值0，最大值100，步长1
-        spinner = new JSpinner(model);
-        spinner.setMinimumSize(new Dimension(80,Integer.MIN_VALUE));
-        spinner.setMaximumSize(new Dimension(80,Integer.MAX_VALUE));
-        add(spinner);
+        // 设置 Spinner 的大小
+        spinner.setPreferredSize(new Dimension(80, 25));
 
-        // 初始化显示数字的标签
-        numberLabel = new JLabel("0");
-        add(numberLabel);
-
-        // 监听JSpinner值变化，更新数字标签
-        spinner.addChangeListener(e -> numberLabel.setText(String.valueOf(spinner.getValue())));
+        // 监听 JSpinner 值变化
         spinner.addChangeListener(e -> this.fireWeightChangedEvent());
 
-        // 创建 GroupLayout
+        // **使用 GroupLayout 进行布局**
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
 
-        // 让 GroupLayout 使用默认间距
-        layout.setAutoCreateGaps(true);
-        layout.setAutoCreateContainerGaps(true);
+        // 禁用默认间隙，避免额外的空白
+        layout.setAutoCreateGaps(false);
+        layout.setAutoCreateContainerGaps(false);
 
         layout.setHorizontalGroup(
                 layout.createSequentialGroup()
-                        .addComponent(nameLabel) // 左对齐
-                        .addGap(10, 30, Short.MAX_VALUE) // 让右侧对齐
-                        .addComponent(spinner)
-                        .addComponent(numberLabel)
+                        .addComponent(nameLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE) // 弹性空间
+                        .addComponent(spinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(numberLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         );
 
         layout.setVerticalGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                         .addComponent(nameLabel)
                         .addComponent(spinner)
                         .addComponent(numberLabel)
@@ -99,6 +91,8 @@ public class PlantItem extends JPanel {
             listener.wightChanged(event);
         }
     }
+
+    public void setPercentage(float i){numberLabel.setText(String.format("%.2f",i)+" %");}
 
     @Override
     public String toString(){

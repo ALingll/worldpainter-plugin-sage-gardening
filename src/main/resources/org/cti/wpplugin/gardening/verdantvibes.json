@@ -1,6 +1,6 @@
 {
   "verdantvibes": {
-    "group_1":{
+    "Flowers":{
       "lobelia":{
         "block":"verdantvibes:lobelia",
         "properties": {
@@ -20,7 +20,9 @@
             "flower_amount": [1,2,3,4],
             "facing": ["north","south","east","west"]
           }
-        },
+        }
+    },
+    "Plants": {
       "snake_plant": {
         "block":"verdantvibes:snake_plant",
         "properties": {
@@ -52,7 +54,32 @@
             }
           }
         ]
+      },
+      "monstera": {
+        "block":"verdantvibes:monstera",
+        "properties": {
+          "facing": ["north","south","east","west"]
+        }
+      },
+      "parlour_palm": {
+        "block":"verdantvibes:parlour_palm",
+        "properties": {
+          "facing": ["north","south","east","west"]
+        }
+      },
+      "money_tree": {
+        "block":"verdantvibes:money_tree",
+        "properties": {
+          "facing": ["north","south","east","west"]
+        }
+      },
+      "dragon_tree": {
+        "block":"verdantvibes:dragon_tree",
+        "properties": {
+          "facing": ["north","south","east","west"]
+        }
       }
-    }
+    },
+    "Water plants": {}
   }
 }

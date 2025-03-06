@@ -182,7 +182,7 @@ public class GardeningLayer extends CustomLayer {
     public String toString(){
         Map<String,Integer> map = new HashMap<>();
         plantMap.forEach((key,value)->map.put(key.getFullName(),value));
-        return map.toString();
+        return map+"\n"+usedJsons.keySet();
     }
 
     @Override

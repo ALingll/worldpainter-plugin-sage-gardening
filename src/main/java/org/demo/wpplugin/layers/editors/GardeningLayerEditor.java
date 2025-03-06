@@ -3,9 +3,11 @@ package org.demo.wpplugin.layers.editors;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.checkerframework.checker.units.qual.C;
 import org.demo.wpplugin.layers.GardeningLayer;
 import org.demo.wpplugin.layers.editors.gui.PlantItem;
 import org.demo.wpplugin.myplants.CustomPlant;
+import org.demo.wpplugin.myplants.PlantElement;
 import org.pepsoft.worldpainter.Platform;
 import org.pepsoft.worldpainter.layers.AbstractLayerEditor;
 import org.pepsoft.worldpainter.layers.exporters.ExporterSettings;
@@ -15,7 +17,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static org.demo.wpplugin.utils.JsonUtils.getFileNameWithoutExtension;
@@ -99,9 +101,11 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         try {
             // 使用相对路径加载资源文件
             jsonNode = new ObjectMapper().readTree(Files.newInputStream(path));
-            tempLayer.putJsonNode(getFileNameWithoutExtension(path),jsonNode);
+            jsonNode.fields().forEachRemaining(field->{
+                tempLayer.putJsonNode(field.getKey(),field.getValue());
+            });
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         ObjectNode objectNode = (ObjectNode) jsonNode;
 
@@ -124,12 +128,26 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
                 return;
             }
         }
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        //JPanel panel = new JPanel();
+        JPanel panel = new JPanel(new GridBagLayout());
+        //panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL; // 水平填充
+        gbc.weightx = 1; // 水平方向上伸展
+        gbc.weighty = 0; // 垂直方向上不伸展
+        gbc.gridwidth = GridBagConstraints.REMAINDER; // 占据剩余的所有列
+        gbc.anchor = GridBagConstraints.NORTH; // 组件顶部对齐
+        gbc.insets = new Insets(5, 1, 1, 5); // 设置组件之间的间距
+
         Iterator<Map.Entry<String, JsonNode>> fields = content.fields();
         while (fields.hasNext()) {
             Map.Entry<String, JsonNode> field = fields.next();
             String groupName = field.getKey();
+            panel.add(new JSeparator(),gbc);
+            JLabel groupLabel = new JLabel(groupName);
+            groupLabel.setFont(new Font(groupLabel.getFont().getName(), Font.BOLD, groupLabel.getFont().getSize()));
+            panel.add(groupLabel,gbc);
             JsonNode itemList = field.getValue();
             Iterator<Map.Entry<String, JsonNode>> itemListFields = itemList.fields();
             while (itemListFields.hasNext()) {
@@ -142,25 +160,58 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
                 itemMap.put(plantItem.getId(),plantItem);
                 plantItem.addWeightChangedListener(e->{
                     tempLayer.setPlant(plantItem.getId(), ((PlantItem)e.getSource()).getValue());
+                    computeAllPercent();
                 });
-                plantItem.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-                panel.add(plantItem);
+                plantItem.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
+                panel.add(plantItem,gbc);
+                //panel.add(new JLabel(plantName),gbc);
             }
         }
+        gbc.weighty = 1; // 让这个组件填充剩余空间
+        panel.add(new JPanel(), gbc); // 空白面板，作为占位符
         tabbedPane.addTab(title, panel);
 
         // 添加关闭按钮
-        JButton closeButton = new JButton("X");
-        closeButton.setBounds(0, 0, 20, 20);
+        JButton closeButton = new JButton("delete");
         closeButton.addActionListener(e -> {
+            int result = JOptionPane.showConfirmDialog(
+                    null,
+                    "Are you sure you want to proceed? \n This will clear all configuration items in this page", // Message
+                    "Confirmation", // Title
+                    JOptionPane.YES_NO_OPTION // 仅显示 "是" 和 "否"
+            );
+
+            if (result != JOptionPane.YES_OPTION)
+                return;
             int selectedIndex = tabbedPane.getSelectedIndex();
             if (selectedIndex != -1) {
+                String selectedTitle = tabbedPane.getTitleAt(selectedIndex);
+                for(Component component:((Container)tabbedPane.getComponentAt(selectedIndex)).getComponents()){
+                    if(component instanceof PlantItem){
+                        String id = ((PlantItem) component).getId();
+                        itemMap.remove(id);
+                        tempLayer.getPlantMap().entrySet().removeIf(entry -> entry.getKey().getFullName().equals(id));
+                    }
+                }
+                tempLayer.getUsedJsons().remove(selectedTitle);
                 tabbedPane.removeTabAt(selectedIndex);
             }
+            computeAllPercent();
         });
         panel.add(closeButton);
     }
 
+    private void computeAllPercent(){
+        AtomicInteger total = new AtomicInteger();
+        itemMap.values().forEach(value -> total.addAndGet(value.getValue()));
+        itemMap.values().forEach(value->{
+            if (value.getValue() == 0) {
+                value.setPercentage(0);
+            } else {
+                value.setPercentage((float) value.getValue()*100 / (float)total.get());
+            }
+        });
+    }
 
 
     @Override
@@ -171,22 +222,22 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
 
     @Override
     public void commit() {
-        System.out.println("commit layer");
-        System.out.println("tempLayer"+tempLayer);
-        layer = new GardeningLayer();
         Map<CustomPlant, Integer> filteredMap = tempLayer.getPlantMap().entrySet().stream()
                 .filter(entry -> entry.getValue() != 0) // 过滤值不为 0 的键值对
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         layer.setPlantMap(filteredMap);
         layer.setUsedJsons(tempLayer.getUsedJsons());
-        System.out.println("commitedLayer"+layer);
         tempLayer = null;
         //System.out.println(layer);
     }
 
     @Override
+    public GardeningLayer getLayer(){
+        return super.getLayer();
+    }
+
+    @Override
     public void setLayer(GardeningLayer layer) {
-        System.out.println("set layer:"+layer);
         super.setLayer(layer);
         tempLayer = layer.clone();
         reset();
@@ -195,11 +246,8 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
     @Override
     public void reset() {
         // Reset the UI to the values currently in the layer
-        System.out.println("reset layer");
         tempLayer.getUsedJsons().forEach((key,value)->{
-            value.fields().forEachRemaining(field->{
-                addTab(field.getKey(),field.getValue());
-            });
+            addTab(key,value);
         });
         tempLayer.getPlantMap().forEach((key,value)->{
             itemMap.get(key.getFullName()).setValue(value);
@@ -212,7 +260,6 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
             throw new IllegalStateException("Settings invalid or incomplete");
         }
         final GardeningLayer previewLayer = saveSettings(this.layer);
-        System.out.println("getSettings:"+this.layer);
         return new ExporterSettings() {
             @Override
             public boolean isApplyEverywhere() {
