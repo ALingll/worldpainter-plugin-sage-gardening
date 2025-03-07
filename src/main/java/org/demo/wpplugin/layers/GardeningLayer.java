@@ -3,7 +3,6 @@ package org.demo.wpplugin.layers;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.demo.wpplugin.layers.exporters.GardeningLayerExporter;
 import org.demo.wpplugin.myplants.CustomPlant;
-import org.demo.wpplugin.utils.JsonUtils;
 import org.pepsoft.worldpainter.Dimension;
 import org.pepsoft.worldpainter.Platform;
 import org.pepsoft.worldpainter.exporting.LayerExporter;
@@ -13,14 +12,12 @@ import org.pepsoft.worldpainter.layers.bo2.Bo2ObjectProvider;
 import org.pepsoft.worldpainter.layers.exporters.ExporterSettings;
 import org.pepsoft.worldpainter.objects.WPObject;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.pepsoft.worldpainter.layers.Layer.DataSize.BIT;
-import static org.pepsoft.worldpainter.layers.Layer.DataSize.NIBBLE;
 
 public class GardeningLayer extends CustomLayer {
     public GardeningLayer() {
@@ -193,5 +190,21 @@ public class GardeningLayer extends CustomLayer {
         layer.usedJsons = new HashMap<>();
         layer.usedJsons.putAll(this.usedJsons);
         return layer;
+    }
+
+    public enum FoundationHandle{
+        IGNORE("Plants will ignore the foundation type and can be placed anywhere"),
+        CHECK_FOUNDATION("Plants will not be placed on unsupported foundation types"),
+        ADD_FOUNDATION("The plant can be placed anywhere, and the block at its root will be replaced with the preferred Foundation");
+
+        private final String description;
+
+        FoundationHandle(String description) {
+            this.description = description;
+        }
+
+        public String getDescription() {
+            return description;
+        }
     }
 }

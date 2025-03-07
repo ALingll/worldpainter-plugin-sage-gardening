@@ -21,6 +21,7 @@ public class CustomPlant implements WPObject {
     private String name;
     private String domain;
     private ArrayList<PlantElement> palette = new ArrayList<>();
+    private List<Material> foundations = new ArrayList<>();
     private Map<String, Pair<StringBuilder,List<String>>> globalProperties = new HashMap<>();
     private Point3i dimension = new Point3i(1,1,1);
     private boolean enableRandom = true;
@@ -58,6 +59,16 @@ public class CustomPlant implements WPObject {
         this.palette.add(material);
         this.enableRandom = true;
         nextObject();
+    }
+
+    public List<Material> getFoundations() {
+        return foundations;
+    }
+
+    public Material getPreferFoundation(){return foundations.isEmpty() ? null : foundations.get(0);}
+
+    public void setFoundations(List<Material> foundations) {
+        this.foundations = foundations;
     }
 
     public String getFullName(){

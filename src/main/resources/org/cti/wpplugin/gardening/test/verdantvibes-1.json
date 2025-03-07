@@ -1,0 +1,85 @@
+{
+  "verdantvibes-1": {
+    "flowers":{
+      "lobelia":{
+        "block":"verdantvibes:lobelia",
+        "properties": {
+          "facing": ["north","south","east","west"]
+        }
+      },
+      "periwinkle":{
+        "block":"verdantvibes:periwinkle",
+        "properties": {
+          "flower_amount": [1,2,3,4],
+          "facing": ["north","south","east","west"]
+        }
+      },
+      "candy_tuft":{
+          "block":"verdantvibes:candy_tuft",
+          "properties": {
+            "flower_amount": [1,2,3,4],
+            "facing": ["north","south","east","west"]
+          }
+        }
+    },
+    "Plants": {
+      "snake_plant": {
+        "block":"verdantvibes:snake_plant",
+        "properties": {
+          "facing": ["north","south","east","west"]
+        }
+      },
+      "burnweed": {
+        "settings": {
+          "global_properties": {
+            "a_facing": ["north","south","east","west"],
+            "a_size": [0,1,2]
+          }
+        },
+        "data": [
+          {
+            "block": "verdantvibes:burnweed",
+            "properties": {
+              "facing": "#a_facing",
+              "size": "#a_size",
+              "half": "lower"
+            }
+          },
+          {
+            "block": "verdantvibes:burnweed",
+            "properties": {
+              "facing": "#a_facing",
+              "size": "#a_size",
+              "half":"upper"
+            }
+          }
+        ]
+      },
+      "monstera": {
+        "block":"verdantvibes:monstera",
+        "properties": {
+          "facing": ["north","south","east","west"]
+        }
+      },
+      "parlour_palm": {
+        "block":"verdantvibes:parlour_palm",
+        "properties": {
+          "facing": ["north","south","east","west"]
+        }
+      },
+      "money_tree": {
+        "block":"verdantvibes:money_tree",
+        "properties": {
+          "facing": ["north","south","east","west"]
+        }
+      },
+      "dragon_tree": {
+        "block":"verdantvibes:dragon_tree",
+        "properties": {
+          "facing": ["north","south","east","west"]
+        }
+      }
+    },
+    "Water plants": {}
+  }
+}

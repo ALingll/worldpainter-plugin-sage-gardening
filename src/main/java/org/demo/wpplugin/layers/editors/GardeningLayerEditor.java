@@ -8,6 +8,7 @@ import org.demo.wpplugin.layers.GardeningLayer;
 import org.demo.wpplugin.layers.editors.gui.PlantItem;
 import org.demo.wpplugin.myplants.CustomPlant;
 import org.demo.wpplugin.myplants.PlantElement;
+import org.demo.wpplugin.utils.EnvironmentChecker;
 import org.pepsoft.worldpainter.Platform;
 import org.pepsoft.worldpainter.layers.AbstractLayerEditor;
 import org.pepsoft.worldpainter.layers.exporters.ExporterSettings;
@@ -16,8 +17,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -34,6 +37,8 @@ import static org.demo.wpplugin.utils.JsonUtils.getFileNameWithoutExtension;
 public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
 
     private static String DEFAULT_RESOURCES_DIR = "org/cti/wpplugin/gardening/";
+    private static String DEFAULT_RESOURCES_TEST_DIR = "org/cti/wpplugin/gardening/test/";
+    private static String DEFAULT_USER_RESOURCES_DIR = "sage-gardening-data/";
 
     private GardeningLayer tempLayer = new GardeningLayer() ;
     private Map<String, PlantItem> itemMap = new HashMap<>();   //List of plant UI nodes
@@ -42,7 +47,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
 
     public GardeningLayerEditor(){
         initGUI();
-        platform = context.getDimension().getWorld().getPlatform();
+        platform = null;
     }
 
     public GardeningLayerEditor(Platform platform) {
@@ -69,16 +74,49 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
-
-        // 递归扫描目录下的所有文件
         List<FileCombo> fileCombos = new ArrayList<>();
-        try (java.util.stream.Stream<Path> stream = Files.walk(resourcePath)) {
-            stream.filter(Files::isRegularFile)
-                    .collect(Collectors.toList())
-                    .forEach(path->fileCombos.add(new FileCombo(path)));
+        try (java.util.stream.Stream<Path> stream = Files.list(resourcePath)) { // 只扫描当前目录
+            stream.filter(Files::isRegularFile)  // 仅保留文件，不包含子目录
+                    .forEach(path -> {
+                        fileCombos.add(new FileCombo(path));
+                        System.out.println("resourcePath:"+path);
+                    });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        if(!EnvironmentChecker.isRunInJar()){
+            Path testPath = null;
+            try {
+                testPath = Paths.get(classLoader.getResource(DEFAULT_RESOURCES_TEST_DIR).toURI());
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+            try (java.util.stream.Stream<Path> stream = Files.list(testPath)) { // 只扫描当前目录
+                stream.filter(Files::isRegularFile)  // 仅保留文件，不包含子目录
+                        .forEach(path -> fileCombos.add(new FileCombo(path)));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        Path userPath = null;
+        try {
+            URL resource = classLoader.getResource(DEFAULT_USER_RESOURCES_DIR);
+            if(resource!=null){
+                userPath = Paths.get(resource.toURI());
+                try (java.util.stream.Stream<Path> stream = Files.list(userPath)) { // 只扫描当前目录
+                    stream.filter(Files::isRegularFile)  // 仅保留文件，不包含子目录
+                            .forEach(path -> fileCombos.add(new FileCombo(path)));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+
+
 
         JComboBox<FileCombo> jComboBox = new JComboBox<>(fileCombos.toArray(new FileCombo[0]));
         jComboBox.addActionListener(new ActionListener() {
@@ -198,7 +236,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
             }
             computeAllPercent();
         });
-        panel.add(closeButton);
+        panel.add(closeButton,0);
     }
 
     private void computeAllPercent(){
@@ -228,7 +266,6 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         layer.setPlantMap(filteredMap);
         layer.setUsedJsons(tempLayer.getUsedJsons());
         tempLayer = null;
-        //System.out.println(layer);
     }
 
     @Override
@@ -310,4 +347,5 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
             return name;
         }
     }
+
 }
