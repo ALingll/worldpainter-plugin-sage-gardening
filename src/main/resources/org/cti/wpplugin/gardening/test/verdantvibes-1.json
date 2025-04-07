@@ -1,7 +1,13 @@
 {
-  "verdantvibes-1": {
+  "metadata": {
+    "provides": ["verdantvibes"],
+    "author": "ALingll",
+    "encoder_v": "beta-1.0"
+  },
+  "verdantvibes": {
     "flowers":{
       "lobelia":{
+        "foundations": ["#dirt","minecraft:farmland"],
         "block":"verdantvibes:lobelia",
         "properties": {
           "facing": ["north","south","east","west"]
@@ -24,6 +30,7 @@
     },
     "Plants": {
       "snake_plant": {
+        "foundations": ["#dirt","minecraft:farmland","minecraft:sand","minecraft:red_sand"],
         "block":"verdantvibes:snake_plant",
         "properties": {
           "facing": ["north","south","east","west"]
@@ -56,24 +63,28 @@
         ]
       },
       "monstera": {
+        "foundations": ["#dirt","minecraft:farmland"],
         "block":"verdantvibes:monstera",
         "properties": {
           "facing": ["north","south","east","west"]
         }
       },
       "parlour_palm": {
+        "foundations": ["#dirt","minecraft:farmland","minecraft:sand"],
         "block":"verdantvibes:parlour_palm",
         "properties": {
           "facing": ["north","south","east","west"]
         }
       },
       "money_tree": {
+        "foundations": ["#dirt","minecraft:farmland","minecraft:mud"],
         "block":"verdantvibes:money_tree",
         "properties": {
           "facing": ["north","south","east","west"]
         }
       },
       "dragon_tree": {
+        "foundations": ["#dirt","minecraft:farmland","minecraft:sand"],
         "block":"verdantvibes:dragon_tree",
         "properties": {
           "facing": ["north","south","east","west"]

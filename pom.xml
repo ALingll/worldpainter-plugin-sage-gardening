@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.demo.wpplugin</groupId>
+    <groupId>org.cti.wpplugin</groupId>
     <artifactId>worldpainter-plugin-sage-gardening</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <dependencies>
@@ -36,8 +36,8 @@
     </parent>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
@@ -47,7 +47,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include>org.demo.wpplugin.properties</include>
+                    <include>org.cti.wpplugin.properties</include>
                     <include>org.pepsoft.worldpainter.plugins</include>
                 </includes>
                 <filtering>true</filtering>
@@ -55,12 +55,22 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <excludes>
-                    <exclude>org.demo.wpplugin.properties</exclude>
+                    <exclude>org.cti.wpplugin.properties</exclude>
                     <exclude>org.pepsoft.worldpainter.plugins</exclude>
                 </excludes>
                 <filtering>false</filtering>
             </resource>
         </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>10</source>
+                    <target>10</target>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <profiles>

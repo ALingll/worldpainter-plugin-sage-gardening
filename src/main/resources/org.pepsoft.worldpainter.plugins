@@ -1,7 +1,7 @@
 {
-  "name": "Demo WorldPainter Plugin",
+  "name": "WorldPainter Plugin Sage-Gardening",
   "version": "${project.version}",
   "classes": [
-    "org.demo.wpplugin.CustomGardeningPlugin"
+    "org.cti.wpplugin.CustomGardeningPlugin"
   ]
 }
