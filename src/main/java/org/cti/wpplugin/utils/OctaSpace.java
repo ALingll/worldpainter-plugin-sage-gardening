@@ -73,15 +73,15 @@ public class OctaSpace<T> {
 
     public T setAndFill(int x, int y, int z, T value) {
         int index = getOctant(x,y,z);
-        var xList = getWithPadding(space[index], x<0 ? -1-x : x, new ArrayList<>());
-        var yList = getWithPadding(xList, y<0 ? -1-y : y, new ArrayList<>());
+        ArrayList<ArrayList<T>> xList = getWithPadding(space[index], x<0 ? -1-x : x, new ArrayList<>());
+        ArrayList<T> yList = getWithPadding(xList, y<0 ? -1-y : y, new ArrayList<>());
         return setWithPadding(yList, z<0 ? -1-z : z, value);
     }
 
     public T getAndFill(int x, int y, int z, T defaultValue) {
         int index = getOctant(x,y,z);
-        var xList = getWithPadding(space[index], x<0 ? -1-x : x, new ArrayList<>());
-        var yList = getWithPadding(xList, y<0 ? -1-y : y, new ArrayList<>());
+        ArrayList<ArrayList<T>> xList = getWithPadding(space[index], x<0 ? -1-x : x, new ArrayList<>());
+        ArrayList<T> yList = getWithPadding(xList, y<0 ? -1-y : y, new ArrayList<>());
         return getWithPadding(yList, z<0 ? -1-z : z, defaultValue);
     }
 

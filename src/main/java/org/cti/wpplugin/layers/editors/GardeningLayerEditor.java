@@ -135,7 +135,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        var i = 0;
+        int i = 0;
 
         optionalGet(jsonNode,META_DATA_TAG).ifPresent(metaData->{
             List<String> provides = makeStringList(strictGet(metaData,PROVIDES_TAG));
