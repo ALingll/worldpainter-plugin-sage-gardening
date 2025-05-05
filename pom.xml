@@ -6,7 +6,7 @@
 
     <groupId>org.cti.wpplugin</groupId>
     <artifactId>worldpainter-plugin-sage-gardening</artifactId>
-    <version>0.2.1</version>
+    <version>0.2.2</version>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -47,15 +47,21 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include>org.cti.wpplugin.gardening.internal</include>
                     <include>org.cti.wpplugin.properties</include>
                     <include>org.pepsoft.worldpainter.plugins</include>
                 </includes>
+                <excludes>
+                    <exclude>org/cti/wpplugin/gardening/test/**</exclude>
+                </excludes>
                 <filtering>true</filtering>
             </resource>
             <resource>
                 <directory>src/main/resources</directory>
+                <includes>
+                    <include>org/cti/wpplugin/gardening/internal/**</include>
+                </includes>
                 <excludes>
+                    <exclude>org/cti/wpplugin/gardening/test/**</exclude>
                     <exclude>org.cti.wpplugin.properties</exclude>
                     <exclude>org.pepsoft.worldpainter.plugins</exclude>
                 </excludes>
