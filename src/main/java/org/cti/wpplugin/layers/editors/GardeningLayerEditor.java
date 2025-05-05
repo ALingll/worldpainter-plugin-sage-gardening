@@ -68,7 +68,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
             throw new RuntimeException(e);
         }
         List<FileCombo> fileCombos = new ArrayList<>();
-        try (java.util.stream.Stream<Path> stream = Files.list(resourcePath)) { // 只扫描当前目录
+        try (java.util.stream.Stream<Path> stream = Files.walk(resourcePath)) { // 只扫描当前目录
             stream.filter(Files::isRegularFile)  // 仅保留文件，不包含子目录
                     .forEach(path -> {
                         fileCombos.add(new FileCombo(path));
@@ -78,6 +78,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
             throw new RuntimeException(e);
         }
 
+        /*
         if(!EnvironmentChecker.isRunInJar()){
             Path testPath = null;
             try {
@@ -92,6 +93,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
                 throw new RuntimeException(e);
             }
         }
+        */
 
         Path userPath = null;
         try {
