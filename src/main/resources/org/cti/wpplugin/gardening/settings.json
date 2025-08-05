@@ -1,0 +1,9 @@
+{
+  "internal": [
+    "verdantvibes-2",
+    "verdantvibes-3"
+  ],
+  "test": [
+    "testPlant"
+  ]
+}

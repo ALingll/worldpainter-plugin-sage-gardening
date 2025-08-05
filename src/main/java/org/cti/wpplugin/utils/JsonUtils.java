@@ -3,6 +3,7 @@ package org.cti.wpplugin.utils;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,21 @@ public class JsonUtils {
         int dotIndex = fileName.lastIndexOf('.');
         return (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);
     }
+
+    public static String getFileNameWithoutExtension(String filePath) {
+        if (filePath == null || filePath.isEmpty()) {
+            return "";
+        }
+        // 同时支持 Windows 和 Unix 路径
+        int fIndex = Math.max(filePath.lastIndexOf('/'), filePath.lastIndexOf('\\'));
+        int dotIndex = filePath.lastIndexOf('.');
+        // 没有扩展名或点在路径之前（可能是隐藏文件 .bashrc）
+        if (dotIndex == -1 || dotIndex < fIndex) {
+            return filePath.substring(fIndex + 1);
+        }
+        return filePath.substring(fIndex + 1, dotIndex);
+    }
+
 
     public static List<String> makeStringList(JsonNode jsonNode){
         List<String> result = new ArrayList<>();

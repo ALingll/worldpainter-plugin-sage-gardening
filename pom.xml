@@ -6,69 +6,51 @@
 
     <groupId>org.cti.wpplugin</groupId>
     <artifactId>worldpainter-plugin-sage-gardening</artifactId>
-    <version>0.2.2</version>
+    <version>0.3.3</version>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>RELEASE</version>
+            <version>LATEST</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
+            <version>LATEST</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.pepsoft.utils</groupId>
-            <artifactId>SwingUtils</artifactId>
-            <version>1.2.2</version>
+            <artifactId>Utils</artifactId>
+            <version>2.0.1</version>
         </dependency>
+
+
+        <dependency>
+            <groupId>org.pepsoft.utils</groupId>
+            <artifactId>SwingUtils</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+
+
 
     </dependencies>
 
     <parent>
         <groupId>org.pepsoft.worldpainter</groupId>
         <artifactId>PluginParent</artifactId>
-        <version>1.9.0</version>
+        <version>2.0.0</version>
     </parent>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
-
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>org.cti.wpplugin.properties</include>
-                    <include>org.pepsoft.worldpainter.plugins</include>
-                </includes>
-                <excludes>
-                    <exclude>org/cti/wpplugin/gardening/test/**</exclude>
-                </excludes>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>org/cti/wpplugin/gardening/internal/**</include>
-                </includes>
-                <excludes>
-                    <exclude>org/cti/wpplugin/gardening/test/**</exclude>
-                    <exclude>org.cti.wpplugin.properties</exclude>
-                    <exclude>org.pepsoft.worldpainter.plugins</exclude>
-                </excludes>
-                <filtering>false</filtering>
-            </resource>
-        </resources>
-    </build>
 
     <profiles>
         <!-- Enable this profile and execute the test phase in order to run your plugin with WorldPainter. -->
@@ -79,7 +61,7 @@
                     <groupId>org.pepsoft.worldpainter</groupId>
                     <artifactId>WPGUI</artifactId>
                     <!-- Update this to the version of WorldPainter you wish to test with: -->
-                    <version>2.23.2</version>
+                    <version>2.25.1</version>
                     <scope>compile</scope>
                 </dependency>
             </dependencies>

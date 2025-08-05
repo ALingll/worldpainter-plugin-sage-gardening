@@ -9,12 +9,13 @@ import org.cti.wpplugin.utils.EnvironmentChecker;
 import org.pepsoft.worldpainter.Platform;
 import org.pepsoft.worldpainter.layers.AbstractLayerEditor;
 import org.pepsoft.worldpainter.layers.exporters.ExporterSettings;
+import org.pepsoft.worldpainter.Configuration;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -24,6 +25,7 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.cti.wpplugin.myplants.decoder.PlantDecoder.*;
 import static org.cti.wpplugin.utils.JsonUtils.*;
@@ -31,11 +33,13 @@ import static org.cti.wpplugin.utils.JsonUtils.*;
 public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
 
     private static String DEFAULT_RESOURCES_DIR = "org/cti/wpplugin/gardening/";
+    private static String DEFAULT_RESOURCES_SETTINGS_DIR = "org/cti/wpplugin/gardening/settings.json";
     private static String DEFAULT_RESOURCES_TEST_DIR = "org/cti/wpplugin/gardening/test/";
+    private static String DEFAULT_RESOURCES_Internal_DIR = "org/cti/wpplugin/gardening/internal/";
     private static String DEFAULT_USER_RESOURCES_DIR = "sage-gardening-data/";
 
     private GardeningLayer tempLayer = new GardeningLayer() ;
-    private Map<String, PlantItem> itemMap = new HashMap<>();   //List of plant UI nodes
+    private Map<String, PlantItem> itemMap = new HashMap<>();   //List of plb ant UI nodes
     private JTabbedPane tabbedPane;
 
     public GardeningLayerEditor(){
@@ -53,71 +57,78 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         tabbedPane = new JTabbedPane(JTabbedPane.LEFT, JTabbedPane.SCROLL_TAB_LAYOUT);
         tabbedPane.setMinimumSize(new Dimension(1000,500));
 
-        //loadJsonSettings("org/cti/wpplugin/gardening/testPlant4.json");
-
-        // 获取资源目录的路径
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        if (classLoader == null) {
-            throw new IllegalStateException("ClassLoader is null");
-        }
-        // 获取目录的 URI
-        Path resourcePath = null;
-        try {
-            resourcePath = Paths.get(classLoader.getResource(DEFAULT_RESOURCES_DIR).toURI());
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
         List<FileCombo> fileCombos = new ArrayList<>();
-        try (java.util.stream.Stream<Path> stream = Files.walk(resourcePath)) { // 只扫描当前目录
-            stream.filter(Files::isRegularFile)  // 仅保留文件，不包含子目录
-                    .forEach(path -> {
-                        fileCombos.add(new FileCombo(path));
-                        System.out.println("resourcePath:"+path);
-                    });
+
+        //get internal resources
+        InputStream inputStream =
+                GardeningLayerEditor.class
+                .getClassLoader()
+                .getResourceAsStream(DEFAULT_RESOURCES_SETTINGS_DIR);
+        if (inputStream == null) {
+            System.out.println("Can't find "+DEFAULT_RESOURCES_SETTINGS_DIR);
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode settings;
+        try {
+            settings = mapper.readTree(inputStream);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        settings.get("internal").forEach(item ->{
+            fileCombos.add(new FileCombo(DEFAULT_RESOURCES_Internal_DIR+item.asText()+".json",
+                    FileCombo.Scope.INTERNAL_DEFINED));
+        });
 
-        /*
-        if(!EnvironmentChecker.isRunInJar()){
-            Path testPath = null;
-            try {
-                testPath = Paths.get(classLoader.getResource(DEFAULT_RESOURCES_TEST_DIR).toURI());
-            } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
-            }
-            try (java.util.stream.Stream<Path> stream = Files.list(testPath)) { // 只扫描当前目录
-                stream.filter(Files::isRegularFile)  // 仅保留文件，不包含子目录
-                        .forEach(path -> fileCombos.add(new FileCombo(path)));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        */
-
+        //get user defined settings
         Path userPath = null;
-        try {
-            URL resource = classLoader.getResource(DEFAULT_USER_RESOURCES_DIR);
-            if(resource!=null){
-                userPath = Paths.get(resource.toURI());
-                try (java.util.stream.Stream<Path> stream = Files.list(userPath)) { // 只扫描当前目录
-                    stream.filter(Files::isRegularFile)  // 仅保留文件，不包含子目录
-                            .forEach(path -> fileCombos.add(new FileCombo(path)));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+        File gardeningLayerDir = new File(Configuration.getConfigDir(), "plugin_data/gardening_layer");
+        if (!gardeningLayerDir.exists()) {
+            boolean created = gardeningLayerDir.mkdirs();
+            if (!created) {
+                System.err.println("Can`t create: " + gardeningLayerDir.getAbsolutePath());
+                return;
             }
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
         }
-
-
+        try (Stream<Path> paths = Files.walk(gardeningLayerDir.toPath())) {
+            paths.filter(Files::isRegularFile)
+                    .forEach(item -> fileCombos.add(new FileCombo(item.toString(), FileCombo.Scope.USER_DEFINED)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         JComboBox<FileCombo> jComboBox = new JComboBox<>(fileCombos.toArray(new FileCombo[0]));
         jComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                loadJsonSettings(((FileCombo)jComboBox.getSelectedItem()).path);
+                FileCombo fileCombo=(FileCombo)jComboBox.getSelectedItem();
+                switch (fileCombo.scope){
+                    case USER_DEFINED -> {
+                        ObjectMapper mapper = new ObjectMapper();
+                        File file = new File(fileCombo.path); // 用字符串路径构造文件
+                        JsonNode rootNode;
+                        try {
+                            rootNode = mapper.readTree(file);   // 读取 JSON 并解析为 JsonNode
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                        loadJsonSettings(rootNode);
+                    }
+                    case INTERNAL_DEFINED -> {
+                        InputStream is = GardeningLayerEditor.class.getClassLoader().getResourceAsStream(fileCombo.path);
+                        if (is == null) {
+                            throw new IllegalArgumentException("Can't find "+fileCombo.path);
+                        }
+                        ObjectMapper mapper = new ObjectMapper();
+                        JsonNode rootNode;
+                        try {
+                            rootNode = mapper.readTree(is);
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                        loadJsonSettings(rootNode);
+                    }
+                }
             }
         });
         jComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE,50));
@@ -129,16 +140,8 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
 
     }
 
-    private void loadJsonSettings(Path path) {
-        JsonNode jsonNode;
-        try {
-            // 使用相对路径加载资源文件
-            jsonNode = new ObjectMapper().readTree(Files.newInputStream(path));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    private void loadJsonSettings(JsonNode jsonNode) {
         int i = 0;
-
         optionalGet(jsonNode,META_DATA_TAG).ifPresent(metaData->{
             List<String> provides = makeStringList(strictGet(metaData,PROVIDES_TAG));
             String encoder_v = makeString(strictGet(metaData,ENCODER_VERSION_TAG));
@@ -355,17 +358,24 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
     private final Platform platform;
 
     private class FileCombo{
+        public enum Scope{
+            INTERNAL_DEFINED,
+            USER_DEFINED
+        }
         public String name;
-        public Path path;
+        public String path;
+        public Scope scope;
 
-        public FileCombo(String name, Path path) {
+        public FileCombo(String name, String path, Scope scope) {
             this.name = name;
             this.path = path;
+            this.scope = scope;
         }
 
-        public FileCombo(Path path){
+        public FileCombo(String path, Scope scope){
             this.path = path;
             this.name = getFileNameWithoutExtension(path);
+            this.scope = scope;
         }
 
         @Override

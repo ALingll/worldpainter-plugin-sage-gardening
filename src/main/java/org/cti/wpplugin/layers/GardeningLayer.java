@@ -14,6 +14,7 @@ import org.pepsoft.worldpainter.layers.exporters.ExporterSettings;
 import org.pepsoft.worldpainter.objects.WPObject;
 
 import java.awt.*;
+import java.io.Serial;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -87,7 +88,8 @@ public class GardeningLayer extends CustomLayer {
      * This class is serialised in the .world file when it is saved, so it must be stable. It is recommended to give it
      * a fixed {@code serialVersionUID} and ensure that any changes are backwards compatible.
      */
-    private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 2017010601L;
 
 
     private Map<CustomPlant, Integer> plantMap = new HashMap<>() ;
