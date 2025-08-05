@@ -8,3 +8,7 @@ This is a plugin for WorldPainter, which provides a new layer called **Gardening
 - The current configuration structure writing is too complex and may be simplified in the future.
 - Aquatic plants are not currently supported, but may be in the future.
 - There is currently no documentation on how to write configuration JSON structures. However, a built-in configuration is provided for [reference](src/main/resources/org/cti/wpplugin/gardening/internal/verdantvibes-2.json), which supports the new vegetation added by the [VerdantVibes](https://github.com/Pandarix/VerdantVibes) mod.
+
+## Configuration
+
+The json file provided by the user should be placed in the `plugin_data\gardening_layer` subdirectory under the worldpainter configuration file directory. For example, on Windows, it would be like `C:\Users\{UserName}\AppData\Roaming\WorldPainter\plugin_data\gardening_layer\{YourJson}.json`
