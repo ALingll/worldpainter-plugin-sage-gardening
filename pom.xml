@@ -21,22 +21,16 @@
             <version>LATEST</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.pepsoft.utils</groupId>
             <artifactId>Utils</artifactId>
             <version>2.0.1</version>
         </dependency>
-
-
         <dependency>
             <groupId>org.pepsoft.utils</groupId>
             <artifactId>SwingUtils</artifactId>
             <version>2.0.0</version>
         </dependency>
-
-
-
     </dependencies>
 
     <parent>
@@ -51,6 +45,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
 
     <profiles>
         <!-- Enable this profile and execute the test phase in order to run your plugin with WorldPainter. -->
