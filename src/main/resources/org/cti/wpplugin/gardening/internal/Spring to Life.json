@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "provides": ["Minecraft 1.21.5 Spring to Life"],
+    "author": "ALingll",
+    "encoder_v": "beta-1.0"
+  },
+  "Minecraft 1.21.5 Spring to Life": {
+    "Spring to Life":{
+      "wildflowers":{
+        "foundations": ["#dirt","minecraft:farmland"],
+        "block":"minecraft:wildflowers",
+        "properties": {
+          "facing": ["north","south","east","west"],
+          "flower_amount":  [0,1,2,3]
+        }
+      },
+      "leaf_litter":{
+        "block":"minecraft:leaf_litter",
+        "properties": {
+          "segment_amount": [1,2,3,4],
+          "facing": ["north","south","east","west"]
+        }
+      },
+      "firefly_bush":{
+        "block":"minecraft:firefly_bush"
+      },
+      "bush":{
+        "block":"minecraft:bush"
+      },
+      "short_dry_grass":{
+        "block":"minecraft:short_dry_grass"
+      },
+      "tall_dry_grass":{
+        "block":"minecraft:tall_dry_grass"
+      }
+    }
+  }
+}

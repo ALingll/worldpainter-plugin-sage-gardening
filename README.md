@@ -4,6 +4,9 @@ This is a plugin for WorldPainter, which provides a new layer called **Gardening
 
 **Gardening Layer** provides similar functions with the internal custom plant layer. The difference is that it decouples the "configuration" of plants types from hard coding. This means that by writing JSON in a specific format, the plugin can support any mod or vanilla plant (only the user needs to download or write the corresponding configuration JSON). At the same time, it can also realize many functions that the traditional custom plant layer cannot.
 
+## ChangeLog
+- Add a snapshot configuration to 1.21.5 plants.
+
 ## TODO
 - The current configuration structure writing is too complex and may be simplified in the future.
 - Aquatic plants are not currently supported, but may be in the future.
