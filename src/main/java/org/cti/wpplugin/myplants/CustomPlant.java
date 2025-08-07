@@ -90,11 +90,18 @@ public class CustomPlant implements WPObject {
         globalProperties.forEach((key,value)->{
             value.first.replace(0,value.first.length(),value.second.get(random.nextInt(value.second.size())));
         });
-        int height = palette.size();
-        dimension.z = height;
-        blockSpace = new int[1][1][height];
-        for (int i=0;i<height;i++){
-            blockSpace[0][0][i]=i;
+        int[] allNum = palette.stream()
+                .mapToInt(item -> item.getTimes(random))
+                .toArray();
+        int sum = Arrays.stream(allNum).sum();
+        dimension.z = sum;
+        blockSpace = new int[1][1][sum];
+        int index = 0;
+        for (int i=0;i<palette.size();i++){
+            for(int j=0;j<allNum[i];j++){
+                blockSpace[0][0][index]=i;
+                index++;
+            }
         }
         return this;
     }

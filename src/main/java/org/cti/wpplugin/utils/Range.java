@@ -15,7 +15,7 @@ public class Range {
     }
 
     public int random(Random a_random){
-        return a_random.nextInt(high-low)+low;
+        return low==high ? low : a_random.nextInt(high-low+1)+low;
     }
 
     public void forEach(Consumer<Integer> consumer){
@@ -24,4 +24,9 @@ public class Range {
     }
 
     public static Range range(int low, int high){return new Range(low,high);}
+
+    @Override
+    public String toString(){
+        return low+"~"+high;
+    }
 }

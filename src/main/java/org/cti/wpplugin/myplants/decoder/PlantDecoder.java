@@ -5,9 +5,11 @@ import org.cti.wpplugin.myplants.CustomPlant;
 import org.cti.wpplugin.myplants.PlantElement;
 import org.cti.wpplugin.utils.BlockTags;
 import org.cti.wpplugin.utils.Pair;
+import org.cti.wpplugin.utils.Range;
 import org.pepsoft.minecraft.Material;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.cti.wpplugin.utils.JsonUtils.*;
 
@@ -24,6 +26,7 @@ public class PlantDecoder {
     public static final String GLOBAL_PROPERTIES_TAG = "global_properties";
     public static final String BLOCK_TAG = "block";
     public static final String PROPERTIES_TAG = "properties";
+    public static final String TIMES_TAG = "times";
 
     private static Material getMaterial(String s){
         try {
@@ -42,6 +45,29 @@ public class PlantDecoder {
                 checkElementJsonFormat(jsonNode);
                 Material m = getMaterial(jsonNode.get(BLOCK_TAG).asText());
                 Map<String, List<StringBuilder>> prop = new HashMap<>();
+                AtomicReference<Range> times = new AtomicReference<>(new Range(1, 1));
+                optionalGet(jsonNode,TIMES_TAG).ifPresent(node -> {
+                    int a, b;
+                    if (node.isInt()) {
+                        a = b = node.intValue();
+                    } else if (node.isTextual()) {
+                        String text = node.textValue().trim();
+
+                        if (text.contains("~")) {
+                            String[] parts = text.split("~");
+                            if (parts.length != 2) {
+                                throw new IllegalArgumentException("Invalid range format: " + text);
+                            }
+                            a = Integer.parseInt(parts[0].trim());
+                            b = Integer.parseInt(parts[1].trim());
+                        } else {
+                            a = b = Integer.parseInt(text);
+                        }
+                    } else {
+                        throw new IllegalArgumentException("Unsupported JsonNode type: " + node);
+                    }
+                    times.set(new Range(a, b));
+                });
                 optionalGet(jsonNode,PROPERTIES_TAG).ifPresent(jsonProperties->{
                     jsonProperties.fields().forEachRemaining(field ->{
                         if(field.getValue().isTextual()){
@@ -57,7 +83,7 @@ public class PlantDecoder {
                         }
                     });
                 });
-                return new PlantElement(m,prop);
+                return new PlantElement(m,prop, times.get());
             }
         }catch (IllegalArgumentException e){
             e.printStackTrace();
@@ -138,6 +164,7 @@ public class PlantDecoder {
         Material prefer = result.isEmpty() ? null : result.get(0);
         return Pair.makePair(new HashSet<>(result),prefer);
     }
+
 
     public static boolean checkDecoderVersion(String s){return s.equals(DECODER_VERSION);}
 

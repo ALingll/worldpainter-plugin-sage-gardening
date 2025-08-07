@@ -32,6 +32,18 @@
       },
       "tall_dry_grass":{
         "block":"minecraft:tall_dry_grass"
+      },
+      "cactus": {
+        "data": [
+          {
+            "block": "minecraft:cactus",
+            "times": "1~10"
+          },
+          {
+            "block": "minecraft:cactus_flower",
+            "times": "0~1"
+          }
+        ]
       }
     }
   }

@@ -1,5 +1,6 @@
 package org.cti.wpplugin.myplants;
 
+import org.cti.wpplugin.utils.Range;
 import org.pepsoft.minecraft.Material;
 
 import java.util.*;
@@ -7,6 +8,7 @@ import java.util.*;
 public class PlantElement {
     private Material material;
     private Map<String, List<StringBuilder>> properties = new HashMap<>();
+    private Range times = new Range(1,1);
     public PlantElement(Material material) {
         this.material = material;
     }
@@ -14,6 +16,12 @@ public class PlantElement {
     public PlantElement(Material material,Map<String, List<StringBuilder>> properties){
         this.material = material;
         this.properties = properties;
+    }
+
+    public PlantElement(Material material,Map<String, List<StringBuilder>> properties, Range times){
+        this.material = material;
+        this.properties = properties;
+        this.times = times;
     }
 
     public Material getMaterial(Random random) {
@@ -24,6 +32,10 @@ public class PlantElement {
             result[0] = result[0]
                     .withProperty(key,value.get(random.nextInt(value.size())).toString());});
         return result[0];
+    }
+
+    public int getTimes(Random random){
+        return times.random(random);
     }
 
     public Material getMaterial() {
