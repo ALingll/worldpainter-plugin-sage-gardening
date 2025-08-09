@@ -5,7 +5,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlantItem extends JPanel {
+public class WeightItem extends JPanel {
     private String id = null;
     // 定义组件字段
     private JLabel nameLabel;
@@ -13,7 +13,7 @@ public class PlantItem extends JPanel {
     private JLabel numberLabel;
     private List<WeightChangedListener> listeners = new ArrayList<>();
 
-    public PlantItem(String id, String labelText) {
+    public WeightItem(String id, String labelText) {
         this.id = id;
         setOpaque(false); // 透明背景，防止影响布局
 
@@ -58,7 +58,7 @@ public class PlantItem extends JPanel {
         return (int) spinner.getValue();
     }
 
-    public PlantItem setValue(int value){
+    public WeightItem setValue(int value){
         spinner.setValue(value);
         return this;
     }
@@ -105,9 +105,9 @@ public class PlantItem extends JPanel {
         JLabel jLabel = new JLabel("aaa");
         frame.add(jLabel, BorderLayout.NORTH);
 
-        PlantItem panel = new PlantItem("Item:","bbb");
+        WeightItem panel = new WeightItem("Item:","bbb");
         panel.addWeightChangedListener(e->{
-            jLabel.setText(String.valueOf(((PlantItem)e.getSource()).getValue()));
+            jLabel.setText(String.valueOf(((WeightItem)e.getSource()).getValue()));
         });
         frame.add(panel, BorderLayout.CENTER);
 

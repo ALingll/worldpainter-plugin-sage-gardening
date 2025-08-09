@@ -3,24 +3,21 @@ package org.cti.wpplugin.layers.editors;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cti.wpplugin.layers.GardeningLayer;
-import org.cti.wpplugin.layers.editors.gui.PlantItem;
+import org.cti.wpplugin.layers.editors.gui.WeightItem;
 import org.cti.wpplugin.myplants.CustomPlant;
-import org.cti.wpplugin.utils.EnvironmentChecker;
 import org.pepsoft.worldpainter.Platform;
 import org.pepsoft.worldpainter.layers.AbstractLayerEditor;
 import org.pepsoft.worldpainter.layers.exporters.ExporterSettings;
 import org.pepsoft.worldpainter.Configuration;
+import org.pepsoft.worldpainter.layers.renderers.PaintPicker;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -39,8 +36,10 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
     private static String DEFAULT_USER_RESOURCES_DIR = "sage-gardening-data/";
 
     private GardeningLayer tempLayer = new GardeningLayer() ;
-    private Map<String, PlantItem> itemMap = new HashMap<>();   //List of plb ant UI nodes
+    private Map<String, WeightItem> itemMap = new HashMap<>();   //List of plb ant UI nodes
     private JTabbedPane tabbedPane;
+    private JTextField textField1 = new JTextField(10); // 设置列宽
+    private PaintPicker paintPicker = new PaintPicker();
 
     public GardeningLayerEditor(){
         initGUI();
@@ -81,7 +80,6 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         });
 
         //get user defined settings
-        Path userPath = null;
         File gardeningLayerDir = new File(Configuration.getConfigDir(), "plugin_data/gardening_layer");
         if (!gardeningLayerDir.exists()) {
             boolean created = gardeningLayerDir.mkdirs();
@@ -134,9 +132,30 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         jComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE,50));
         jComboBox.setMinimumSize(new Dimension(10000,50));
 
+        // 创建一个横向排列的面板
+        JPanel inputRow = new JPanel();
+        inputRow.setLayout(new BoxLayout(inputRow, BoxLayout.X_AXIS));
+        // 第一个标签和文本框
+        JLabel label1 = new JLabel("Name:");
+        textField1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        // 第二个标签和文本框
+        JLabel label2 = new JLabel("Paint:");
+        // 给两个标签一点右边距，使间距更好看
+        label1.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
+        label2.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 5));
+        // 添加组件到横向面板
+        inputRow.add(label1);
+        inputRow.add(textField1);
+        inputRow.add(label2);
+        inputRow.add(paintPicker);
+        // 设置面板最大宽度撑满
+        inputRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(jComboBox);
         add(tabbedPane);
+        add(inputRow);
 
     }
 
@@ -161,6 +180,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
                         if (index != -1) tabbedPane.setToolTipTextAt(index, "Author:"+author.asText());
                     });
                     tempLayer.putJsonNode(provide, metaData, provideBody);
+
                 });
             });
         });
@@ -203,14 +223,15 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
                 JsonNode itemNode = afield.getValue();
                 CustomPlant customPlant = loadPlantByJson(plantName, title+":"+groupName,itemNode);
                 if (!tempLayer.getPlantMap().containsKey(customPlant))tempLayer.setPlant(customPlant,0);
-                PlantItem plantItem = new PlantItem(title+":"+groupName+":"+plantName,plantName);
-                itemMap.put(plantItem.getId(),plantItem);
-                plantItem.addWeightChangedListener(e->{
-                    tempLayer.setPlant(plantItem.getId(), ((PlantItem)e.getSource()).getValue());
+                WeightItem weightItem = new WeightItem(title+":"+groupName+":"+plantName,plantName);
+                itemMap.put(weightItem.getId(), weightItem);
+                weightItem.addWeightChangedListener(e->{
+                    tempLayer.setPlant(weightItem.getId(), ((WeightItem)e.getSource()).getValue());
+                    context.settingsChanged();
                     computeAllPercent();
                 });
-                plantItem.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
-                panel.add(plantItem,gbc);
+                weightItem.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
+                panel.add(weightItem,gbc);
                 //panel.add(new JLabel(plantName),gbc);
             }
         });
@@ -233,8 +254,8 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
             if (selectedIndex != -1) {
                 String selectedTitle = tabbedPane.getTitleAt(selectedIndex);
                 for(Component component:((Container)tabbedPane.getComponentAt(selectedIndex)).getComponents()){
-                    if(component instanceof PlantItem){
-                        String id = ((PlantItem) component).getId();
+                    if(component instanceof WeightItem){
+                        String id = ((WeightItem) component).getId();
                         itemMap.remove(id);
                         tempLayer.getPlantMap().entrySet().removeIf(entry -> entry.getKey().getFullName().equals(id));
                     }
@@ -264,8 +285,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
 
     @Override
     public GardeningLayer createLayer() {
-        System.out.println("create layer");
-        return tempLayer;
+        return new GardeningLayer();
     }
 
     @Override
@@ -275,7 +295,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         layer.setPlantMap(filteredMap);
         layer.setUsedJsons(tempLayer.getUsedJsons());
-        tempLayer = null;
+        saveSettings(layer);
     }
 
     @Override
@@ -286,7 +306,10 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
     @Override
     public void setLayer(GardeningLayer layer) {
         super.setLayer(layer);
-        tempLayer = layer.clone();
+        if(layer==null)
+            tempLayer = createLayer();
+        else
+            tempLayer = layer.clone();
         reset();
     }
 
@@ -318,6 +341,9 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         tempLayer.getPlantMap().forEach((key,value)->{
             itemMap.get(key.getFullName()).setValue(value);
         });
+        textField1.setText(layer.getName());
+        paintPicker.setPaint(layer.getPaint());
+        paintPicker.setOpacity(layer.getOpacity());
     }
 
     @Override
@@ -331,12 +357,10 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
             public boolean isApplyEverywhere() {
                 return false;
             }
-
             @Override
             public GardeningLayer getLayer() {
                 return previewLayer;
             }
-
             @Override
             public ExporterSettings clone() {
                 throw new UnsupportedOperationException("Not supported");
@@ -345,8 +369,11 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
     }
 
     private GardeningLayer saveSettings(GardeningLayer layer) {
-        if(layer == null)
+        if(layer==null)
             layer = createLayer();
+        layer.setPaint(paintPicker.getPaint());
+        layer.setOpacity(paintPicker.getOpacity());
+        layer.setName(textField1.getText());
         return layer;
     }
 

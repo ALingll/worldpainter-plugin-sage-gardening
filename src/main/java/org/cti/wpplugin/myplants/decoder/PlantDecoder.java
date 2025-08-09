@@ -24,6 +24,11 @@ public class PlantDecoder {
     public static final String DATA_TAG = "data";
     public static final String SETTINGS_TAG = "settings";
     public static final String GLOBAL_PROPERTIES_TAG = "global_properties";
+    public static final String UI_PROPERTIES_TAG = "ui_properties";
+    public static final String UI_TYPE_TAG = "type";
+    public static final String UI_MAX_VALUE_TAG = "max";
+    public static final String UI_MIN_VALUE_TAG = "min";
+    public static final String UI_DEFAULT_VALUE_TAG = "default";
     public static final String BLOCK_TAG = "block";
     public static final String PROPERTIES_TAG = "properties";
     public static final String TIMES_TAG = "times";
@@ -47,26 +52,7 @@ public class PlantDecoder {
                 Map<String, List<StringBuilder>> prop = new HashMap<>();
                 AtomicReference<Range> times = new AtomicReference<>(new Range(1, 1));
                 optionalGet(jsonNode,TIMES_TAG).ifPresent(node -> {
-                    int a, b;
-                    if (node.isInt()) {
-                        a = b = node.intValue();
-                    } else if (node.isTextual()) {
-                        String text = node.textValue().trim();
-
-                        if (text.contains("~")) {
-                            String[] parts = text.split("~");
-                            if (parts.length != 2) {
-                                throw new IllegalArgumentException("Invalid range format: " + text);
-                            }
-                            a = Integer.parseInt(parts[0].trim());
-                            b = Integer.parseInt(parts[1].trim());
-                        } else {
-                            a = b = Integer.parseInt(text);
-                        }
-                    } else {
-                        throw new IllegalArgumentException("Unsupported JsonNode type: " + node);
-                    }
-                    times.set(new Range(a, b));
+                    times.set(Range.asRange(node.textValue()));
                 });
                 optionalGet(jsonNode,PROPERTIES_TAG).ifPresent(jsonProperties->{
                     jsonProperties.fields().forEachRemaining(field ->{
@@ -133,10 +119,33 @@ public class PlantDecoder {
                                 }else {
                                     values.add(makeString(item.getValue()));
                                 }
-                                result.setGlobalProperties(item.getKey().toString(),values);
+                                result.setVariableProperties(item.getKey().toString(),values);
                             });
                             result.linkAllGlobalProperties();
                         }
+                        optionalGet(settings,UI_PROPERTIES_TAG).ifPresent(ui_properties -> {
+                            ui_properties.properties().forEach(item ->{
+                                String varName = item.getKey();
+                                JsonNode varBody = item.getValue();
+                                switch (strictGet(varBody,UI_TYPE_TAG).textValue()){
+                                    case "range" : {
+                                        int maxValue = strictGet(varBody,UI_MAX_VALUE_TAG).asInt();
+                                        int minValue = strictGet(varBody,UI_MIN_VALUE_TAG).asInt();
+                                        Range range = new Range(maxValue,minValue);
+                                        optionalGet(varBody,UI_DEFAULT_VALUE_TAG).ifPresent(node ->{
+                                            Range defaultRange = Range.asRange(node.textValue());
+                                            range.high = defaultRange.high;
+                                            range.low = defaultRange.low;
+                                        });
+                                    }
+                                    default:
+                                        throw new IllegalArgumentException(
+                                                "Unsupported UI type "+"\""
+                                                +strictGet(varBody,UI_TYPE_TAG).textValue()
+                                                +"\"");
+                                }
+                            });
+                        });
                     }
                     return result.setFoundations(foundations);
                 }else {

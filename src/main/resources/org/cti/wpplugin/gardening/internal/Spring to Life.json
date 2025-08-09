@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "provides": ["Minecraft 1.21.5 Spring to Life"],
+    "provides": ["Spring to Life"],
     "author": "ALingll",
     "encoder_v": "beta-1.0"
   },
-  "Minecraft 1.21.5 Spring to Life": {
-    "Spring to Life":{
+  "Spring to Life": {
+    "Minecraft 1.21.5 Spring to Life":{
       "wildflowers":{
         "foundations": ["#dirt","minecraft:farmland"],
         "block":"minecraft:wildflowers",
@@ -34,10 +34,20 @@
         "block":"minecraft:tall_dry_grass"
       },
       "cactus": {
+        "settings": {
+          "ui_properties": {
+            "a_ui_number": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~5"
+            }
+          }
+        },
         "data": [
           {
             "block": "minecraft:cactus",
-            "times": "1~10"
+            "times": "#a_ui_number"
           },
           {
             "block": "minecraft:cactus_flower",

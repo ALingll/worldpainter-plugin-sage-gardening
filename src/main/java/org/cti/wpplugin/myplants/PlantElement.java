@@ -1,5 +1,6 @@
 package org.cti.wpplugin.myplants;
 
+import org.cti.wpplugin.myplants.variable.SingleChoiceVar;
 import org.cti.wpplugin.utils.Range;
 import org.pepsoft.minecraft.Material;
 
@@ -7,24 +8,24 @@ import java.util.*;
 
 public class PlantElement {
     private Material material;
-    private Map<String, List<StringBuilder>> properties = new HashMap<>();
+    private Map<String, SingleChoiceVar> properties = new HashMap<>();
     private Range times = new Range(1,1);
     public PlantElement(Material material) {
         this.material = material;
     }
 
-    public PlantElement(Material material,Map<String, List<StringBuilder>> properties){
+    public PlantElement(Material material,Map<String, SingleChoiceVar properties){
         this.material = material;
         this.properties = properties;
     }
 
-    public PlantElement(Material material,Map<String, List<StringBuilder>> properties, Range times){
+    public PlantElement(Material material,Map<String, SingleChoiceVar properties, Range times){
         this.material = material;
         this.properties = properties;
         this.times = times;
     }
 
-    public Material getMaterial(Random random) {
+    public Material getMaterial() {
         if(properties.isEmpty())
             return material;
         final Material[] result = {material};
@@ -48,16 +49,16 @@ public class PlantElement {
         return result[0];
     }
 
-    public PlantElement linkGlobalSettings(String id, StringBuilder target){
-        properties.forEach((key,value)->{
-            for(int i=0;i<value.size();i++){
-                if(value.get(i).toString().equals("#"+id)){
-                    value.set(i,target);
-                }
-            }
-        });
-        return this;
-    }
+//    public PlantElement linkGlobalSettings(String id, StringBuilder target){
+//        properties.forEach((key,value)->{
+//            for(int i=0;i<value.size();i++){
+//                if(value.get(i).toString().equals("#"+id)){
+//                    value.set(i,target);
+//                }
+//            }
+//        });
+//        return this;
+//    }
 
 
     @Override

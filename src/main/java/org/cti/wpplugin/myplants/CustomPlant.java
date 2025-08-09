@@ -1,5 +1,8 @@
 package org.cti.wpplugin.myplants;
 
+import org.cti.wpplugin.myplants.variable.RandomVariable;
+import org.cti.wpplugin.myplants.variable.SingleChoiceVar;
+import org.cti.wpplugin.myplants.variable.Variable;
 import org.pepsoft.minecraft.Entity;
 import org.pepsoft.minecraft.Material;
 import org.pepsoft.minecraft.TileEntity;
@@ -20,7 +23,8 @@ public class CustomPlant implements WPObject {
     private ArrayList<PlantElement> palette = new ArrayList<>();
     private Set<Material> foundations = new HashSet<>();
     private Material prefer_foundation;
-    private Map<String, Pair<StringBuilder,List<String>>> globalProperties = new HashMap<>();
+    private Map<String, RandomVariable> variableProperties = new HashMap<>();
+    private Map<String, Variable> uiProperties = new HashMap<>();
     private Point3i dimension = new Point3i(1,1,1);
     private boolean enableRandom = true;
     private Random random = null;
@@ -71,14 +75,19 @@ public class CustomPlant implements WPObject {
         return domain+":"+name;
     }
 
-    public CustomPlant setGlobalProperties(String id, List<String> stringList){
-        globalProperties.put(id,new Pair<>(new StringBuilder(stringList.get(0)),stringList));
+    public CustomPlant setVariableProperties(String id, List<String> stringList){
+        variableProperties.put(id,new SingleChoiceVar(stringList));
+        return this;
+    }
+
+    public CustomPlant setUiProperties(String id, Variable variable){
+        uiProperties.put(id,variable);
         return this;
     }
 
     public CustomPlant linkAllGlobalProperties(){
-        globalProperties.forEach((key,value)->{
-            palette.forEach(item->item.linkGlobalSettings(key,value.first));
+        variableProperties.forEach((key, value)->{
+            palette.forEach(item->item.linkGlobalSettings(key,value.getVariable()));
         });
         return this;
     }
@@ -87,8 +96,8 @@ public class CustomPlant implements WPObject {
         if(!enableRandom)
             return this;
         this.random = random;
-        globalProperties.forEach((key,value)->{
-            value.first.replace(0,value.first.length(),value.second.get(random.nextInt(value.second.size())));
+        variableProperties.forEach((key, value)->{
+            value.getVariable().replace(0,value.getVariable().length(),value.second.get(random.nextInt(value.second.size())));
         });
         int[] allNum = palette.stream()
                 .mapToInt(item -> item.getTimes(random))
@@ -208,7 +217,7 @@ public class CustomPlant implements WPObject {
     public String toString(){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getFullName()+":"+"\n");
-        stringBuilder.append("global_properties:"+globalProperties.toString()+"\n");
+        stringBuilder.append("global_properties:"+ variableProperties.toString()+"\n");
         stringBuilder.append("palette:"+palette.toString());
         return stringBuilder.toString();
     }
