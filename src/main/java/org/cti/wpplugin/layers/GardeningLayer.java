@@ -1,6 +1,7 @@
 package org.cti.wpplugin.layers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.cti.wpplugin.layers.editors.gui.ValueEditor;
 import org.cti.wpplugin.layers.exporters.GardeningLayerExporter;
 import org.cti.wpplugin.myplants.CustomPlant;
 import org.cti.wpplugin.utils.Pair;
@@ -92,7 +93,7 @@ public class GardeningLayer extends CustomLayer {
     private static final long serialVersionUID = 2017010601L;
 
 
-    private Map<CustomPlant, Integer> plantMap = new HashMap<>() ;
+    private Map<CustomPlant, PlantSetting> plantMap = new HashMap<>() ;
     private Map<String, Pair<JsonNode,JsonNode>> usedJsons = new HashMap<>();
 
     public boolean isCheckFoundation() {
@@ -114,21 +115,21 @@ public class GardeningLayer extends CustomLayer {
         return usedJsons;
     }
 
-    public Map<CustomPlant, Integer> getPlantMap(){return plantMap;}
+    public Map<CustomPlant, PlantSetting> getPlantMap(){return plantMap;}
 
-    public void setPlantMap(Map<CustomPlant, Integer> plantMap) {
+    public void setPlantMap(Map<CustomPlant, PlantSetting> plantMap) {
         this.plantMap = plantMap;
     }
 
     public Bo2ObjectProvider getObjectProvider(Platform platform) {
         List<CustomPlant> customPlantList = new ArrayList<>(plantMap.keySet());
         AtomicInteger sum = new AtomicInteger(0);
-        plantMap.forEach((plant, value) -> sum.addAndGet(value));
+        plantMap.forEach((plant, value) -> sum.addAndGet(value.weight));
         List<Integer> index = new ArrayList<>(Collections.nCopies(sum.get(), null));
         int total = 0;
 
         for(int i = 0; i<customPlantList.size(); i++){
-            for(int j = 0; j<plantMap.get(customPlantList.get(i)); j++){
+            for(int j = 0; j<plantMap.get(customPlantList.get(i)).weight; j++){
                 index.set(total,i);
                 total++;
             }
@@ -165,33 +166,60 @@ public class GardeningLayer extends CustomLayer {
         };
     }
 
-    public GardeningLayer setPlant(CustomPlant customPlant, int weight) {
-        plantMap.put(customPlant,weight);
-        return this;
-    }
-
-    public GardeningLayer setPlant(String name, String domain, int weight) {
-        Optional<Map.Entry<CustomPlant, Integer>> result = plantMap.entrySet()
+    private CustomPlant getPlant(String name, String domain){
+        Optional<Map.Entry<CustomPlant, PlantSetting>> result = plantMap.entrySet()
                 .stream()
                 .filter(entry -> entry.getKey().getFullName().equals(domain+":"+name))
                 .findFirst();
-        plantMap.put(result.get().getKey(), weight);
-        return this;
+        return result.get().getKey();
     }
 
-    public GardeningLayer setPlant(String fullId, int weight) {
-        Optional<Map.Entry<CustomPlant, Integer>> result = plantMap.entrySet()
+    private CustomPlant getPlant(String fullId){
+        Optional<Map.Entry<CustomPlant, PlantSetting>> result = plantMap.entrySet()
                 .stream()
                 .filter(entry -> entry.getKey().getFullName().equals(fullId))
                 .findFirst();
-        plantMap.put(result.get().getKey(), weight);
+        return result.get().getKey();
+    }
+
+    public GardeningLayer setPlant(CustomPlant customPlant, int weight) {
+        if(plantMap.containsKey(customPlant)){
+            plantMap.get(customPlant).weight=weight;
+        }else{
+            plantMap.put(customPlant, new PlantSetting(weight));
+        }
         return this;
     }
+
+    public GardeningLayer setPlant(CustomPlant customPlant, String id, Object varObj) {
+        if(plantMap.containsKey(customPlant)){
+            plantMap.get(customPlant).uiProperties.put(id, varObj);
+        }
+        return this;
+    }
+
+    public GardeningLayer setPlant(String name, String domain, String id, Object varObj) {
+        return setPlant(getPlant(name,domain),id,varObj);
+    }
+
+    public GardeningLayer setPlant(String fullId, String id, Object varObj) {
+        return setPlant(getPlant(fullId),id,varObj);
+    }
+
+    public GardeningLayer setPlant(String name, String domain, int weight) {
+        return setPlant(getPlant(name,domain),weight);
+    }
+
+    public GardeningLayer setPlant(String fullId, int weight) {
+        return setPlant(getPlant(fullId),weight);
+    }
+
+
 
     @Override
     public String toString(){
         Map<String,Integer> map = new HashMap<>();
-        plantMap.forEach((key,value)->map.put(key.getFullName(),value));
+        plantMap.forEach((key,value)->map.put(key.getFullName(),value.weight));
         return map+"\n"+usedJsons.keySet();
     }
 
@@ -219,5 +247,19 @@ public class GardeningLayer extends CustomLayer {
         public String getDescription() {
             return description;
         }
+    }
+
+    public class PlantSetting{
+        public int weight = 0;
+        public Map<String, Object> uiProperties = new HashMap<>();
+        public PlantSetting(int weight){
+            this.weight = weight;
+        }
+        public PlantSetting(int weight, Map<String, Object> uiProperties){
+            this.weight = weight;
+            this.uiProperties = uiProperties;
+        }
+        @Override
+        public String toString(){return String.format("{w=%d,p=%s}",weight,uiProperties);}
     }
 }

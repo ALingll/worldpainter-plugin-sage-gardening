@@ -2,6 +2,7 @@ package org.cti.wpplugin.myplants;
 
 import org.cti.wpplugin.myplants.variable.RandomVariable;
 import org.cti.wpplugin.myplants.variable.SingleChoiceVar;
+import org.cti.wpplugin.myplants.variable.UiVariable;
 import org.cti.wpplugin.myplants.variable.Variable;
 import org.pepsoft.minecraft.Entity;
 import org.pepsoft.minecraft.Material;
@@ -23,26 +24,33 @@ public class CustomPlant implements WPObject {
     private ArrayList<PlantElement> palette = new ArrayList<>();
     private Set<Material> foundations = new HashSet<>();
     private Material prefer_foundation;
-    private Map<String, RandomVariable> variableProperties = new HashMap<>();
-    private Map<String, Variable> uiProperties = new HashMap<>();
+    private Map<String, RandomVariable> globalVariables = new HashMap<>();      //命名变量
+    private Map<String, UiVariable> uiVariableMap =new HashMap<>();             //Ui控制变量
+    private Set<RandomVariable> allVariables = new HashSet<>();                 //所有随机变量，包括子元素匿名变量和全局命名变量
     private Point3i dimension = new Point3i(1,1,1);
     private boolean enableRandom = true;
     private Random random = null;
     private int[][][] blockSpace;
 
-    public CustomPlant(String name, String domain, ArrayList<PlantElement> palette, boolean enableRandom) {
+    public CustomPlant(String name, String domain, List<PlantElement> palette, boolean enableRandom) {
         this.name = name;
         this.domain = domain;
-        this.palette = palette;
+        palette.forEach(this::addElement);
         this.enableRandom = true;
         nextObject();
+        this.enableRandom = enableRandom;
+    }
+
+    public CustomPlant(String name, String domain, boolean enableRandom) {
+        this.name = name;
+        this.domain = domain;
         this.enableRandom = enableRandom;
     }
 
     public CustomPlant(String name, String domain, Material material){
         this.name = name;
         this.domain = domain;
-        this.palette.add(new PlantElement(material));
+        addElement(new PlantElement(material));
         this.enableRandom = true;
         nextObject();
     }
@@ -50,7 +58,7 @@ public class CustomPlant implements WPObject {
     public CustomPlant(String name, String domain, String material){
         this.name = name;
         this.domain = domain;
-        this.palette.add(new PlantElement(Material.get(material)));
+        addElement(new PlantElement(Material.get(material)));
         this.enableRandom = true;
         nextObject();
     }
@@ -58,7 +66,7 @@ public class CustomPlant implements WPObject {
     public CustomPlant(String name, String domain, PlantElement material){
         this.name = name;
         this.domain = domain;
-        this.palette.add(material);
+        addElement(material);
         this.enableRandom = true;
         nextObject();
     }
@@ -69,38 +77,74 @@ public class CustomPlant implements WPObject {
         return this;
     }
 
+    public CustomPlant addElement(PlantElement material){
+        this.palette.add(material);
+        allVariables.addAll(material.getAllProperties().values());
+        return this;
+    }
+
     public Material getPreferFoundation(){return prefer_foundation;}
 
     public String getFullName(){
         return domain+":"+name;
     }
 
-    public CustomPlant setVariableProperties(String id, List<String> stringList){
-        variableProperties.put(id,new SingleChoiceVar(stringList));
+//    public CustomPlant setVariableProperties(String id, List<String> stringList){
+//        globalVariables.put(id,new SingleChoiceVar(stringList));
+//        return this;
+//    }
+
+    public CustomPlant setNamedVar(String id, RandomVariable variable){
+        globalVariables.put(id,variable);
+        allVariables.add(variable);
         return this;
     }
 
-    public CustomPlant setUiProperties(String id, Variable variable){
-        uiProperties.put(id,variable);
+    public RandomVariable getNamedVar(String id){
+        return globalVariables.get(id);
+    }
+
+    public CustomPlant setUiVar(String id, UiVariable variable){
+        uiVariableMap.put(id, variable);
         return this;
     }
 
-    public CustomPlant linkAllGlobalProperties(){
-        variableProperties.forEach((key, value)->{
-            palette.forEach(item->item.linkGlobalSettings(key,value.getVariable()));
-        });
-        return this;
+    public Set<Map.Entry<String, UiVariable>> getAllUiVar(){
+        return uiVariableMap.entrySet();
     }
+
+    public <VarType extends RandomVariable> VarType getNamedVar(String id, Class<VarType> clazz) throws IllegalArgumentException {
+        RandomVariable variable = getNamedVar(id);
+        if (variable==null)
+            throw new IllegalArgumentException(id+" has not defined.");
+        if(!clazz.isInstance(variable)){
+            throw new IllegalArgumentException(
+                    String.format("%s type: %s \t Required type %s", id, id.getClass().getName(), clazz.getName()));
+        }
+        return clazz.cast(variable);
+    }
+
+//    public CustomPlant setUiProperties(String id, Variable variable){
+//        uiProperties.put(id,variable);
+//        return this;
+//    }
+
+//    public CustomPlant linkAllGlobalProperties(){
+//        variableProperties.forEach((key, value)->{
+//            palette.forEach(item->item.linkGlobalSettings(key,value.getVariable()));
+//        });
+//        return this;
+//    }
 
     public CustomPlant nextObject(Random random){
         if(!enableRandom)
             return this;
         this.random = random;
-        variableProperties.forEach((key, value)->{
-            value.getVariable().replace(0,value.getVariable().length(),value.second.get(random.nextInt(value.second.size())));
-        });
+
+        allVariables.forEach(item -> item.random(random));
+
         int[] allNum = palette.stream()
-                .mapToInt(item -> item.getTimes(random))
+                .mapToInt(PlantElement::getTimes)
                 .toArray();
         int sum = Arrays.stream(allNum).sum();
         dimension.z = sum;
@@ -158,7 +202,7 @@ public class CustomPlant implements WPObject {
     @Override
     public Material getMaterial(int x, int y, int z) {
         if(this.random != null)
-            return palette.get(blockSpace[x][y][z]).getMaterial(random);
+            return palette.get(blockSpace[x][y][z]).getMaterial();
         return palette.get(blockSpace[x][y][z]).getMaterial();
     }
 
@@ -217,7 +261,7 @@ public class CustomPlant implements WPObject {
     public String toString(){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getFullName()+":"+"\n");
-        stringBuilder.append("global_properties:"+ variableProperties.toString()+"\n");
+        stringBuilder.append("global_properties:"+ globalVariables.toString()+"\n");
         stringBuilder.append("palette:"+palette.toString());
         return stringBuilder.toString();
     }

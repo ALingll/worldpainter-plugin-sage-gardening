@@ -10,25 +10,19 @@ import java.util.Random;
  * @desc:
  * @create: 2025-08-09 03:30
  **/
-public class RangeVar extends RandomVariable<Integer> implements UiVariable<RangeItem>{
-    public int max;
-    public int min;
+public class RangeVar extends RandomVariable<Integer>{
+
     public Range range;
 
-    public RangeVar(Range range, int max, int min) {
-        super((max+min)/2);
+    public RangeVar(Range range) {
+        super((range.low+range.high)/2);
         this.range = range;
-        this.max = max;
-        this.min = min;
-    }
 
-    @Override
-    public RangeItem getComponent() {
-        return new RangeItem(range,max,min);
     }
 
     @Override
     public Integer random(Random random) {
-        return null;
+        variable = range.random(random);
+        return variable;
     }
 }

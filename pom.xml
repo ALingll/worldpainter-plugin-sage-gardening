@@ -6,19 +6,13 @@
 
     <groupId>org.cti.wpplugin</groupId>
     <artifactId>worldpainter-plugin-sage-gardening</artifactId>
-    <version>0.3.5</version>
+    <version>0.3.6</version>
 
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>LATEST</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>LATEST</version>
+            <version>5.10.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -89,7 +83,7 @@
                                 <argument>-classpath</argument>
                                 <classpath/>
                                 <!-- Uncomment this to enable debugging. Change suspend=n to suspend=y if you want to debug plugin loading or initialisation: -->
-                                <!--argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005</argument-->
+                                <!--argument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005</argument-->
                                 <!-- These exports are needed from Java 9+ to make the JIDE GUI framework work: -->
                                 <argument>--add-exports</argument>
                                 <argument>java.desktop/com.sun.java.swing.plaf.windows=ALL-UNNAMED</argument>

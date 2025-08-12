@@ -24,7 +24,8 @@ public class SingleChoiceVar extends RandomVariable<String> {
     //随机被包装对象的值并更新新值
     @Override
     public String random(Random random) {
-        setValue(stringList.get(random.nextInt(stringList.size())));
+        if(stringList.size()==1) setValue(stringList.get(0));
+        else setValue(stringList.get(random.nextInt(stringList.size())));
         return getValue();
     }
 }

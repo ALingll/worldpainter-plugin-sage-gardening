@@ -17,14 +17,14 @@ public class WeightItem extends JPanel {
         this.id = id;
         setOpaque(false); // 透明背景，防止影响布局
 
-        nameLabel = new JLabel(labelText);
+        nameLabel = new JLabel(padRight(labelText,20));
         spinner = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
         numberLabel = new JLabel("0.00 %");
         numberLabel.setPreferredSize(new Dimension(80, 25));
         numberLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
         // 设置 Spinner 的大小
-        spinner.setPreferredSize(new Dimension(80, 25));
+        spinner.setPreferredSize(new Dimension(80, 20));
 
         // 监听 JSpinner 值变化
         spinner.addChangeListener(e -> this.fireWeightChangedEvent());
@@ -40,7 +40,7 @@ public class WeightItem extends JPanel {
         layout.setHorizontalGroup(
                 layout.createSequentialGroup()
                         .addComponent(nameLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE) // 弹性空间
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 0, Short.MAX_VALUE) // 弹性占位推开后面组件
                         .addComponent(spinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                         .addComponent(numberLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         );
@@ -94,6 +94,32 @@ public class WeightItem extends JPanel {
     public String toString(){
         return getClass().getName() + "@" + Integer.toHexString(hashCode());
     }
+
+    private static String padToMultiple(String s, int num) {
+        if (s == null) s = "";
+        int length = s.length();
+        int remainder = length % num;
+        if (remainder == 0) {
+            return s; // 已经是10的倍数
+        }
+        int paddingLength = num - remainder; // 需要补的空格数
+        StringBuilder sb = new StringBuilder(s);
+        for (int i = 0; i < paddingLength; i++) {
+            sb.append(' ');
+        }
+        return sb.toString();
+    }
+
+    private static String padRight(String s, int n) {
+        if (s == null) s = "";
+        if (s.length() >= n) return s;
+        StringBuilder sb = new StringBuilder(s);
+        for (int i = s.length(); i < n; i++) {
+            sb.append(' ');
+        }
+        return sb.toString();
+    }
+
 
     public static void main(String[] args) {
         // 创建 JFrame 并设置其内容面板为自定义的 CustomPanel

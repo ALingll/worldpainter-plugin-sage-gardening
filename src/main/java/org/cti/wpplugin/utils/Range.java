@@ -15,6 +15,7 @@ public class Range {
     }
 
     public int random(Random a_random){
+        System.out.println("Random "+this);
         return low==high ? low : a_random.nextInt(high-low+1)+low;
     }
 
@@ -47,6 +48,6 @@ public class Range {
 
     @Override
     public String toString(){
-        return low+"~"+high;
+        return low+"~"+high+"@"+Integer.toHexString(System.identityHashCode(this));
     }
 }

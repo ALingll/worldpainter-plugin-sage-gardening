@@ -3,8 +3,10 @@ package org.cti.wpplugin.layers.editors;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cti.wpplugin.layers.GardeningLayer;
+import org.cti.wpplugin.layers.editors.gui.PlantEditor;
 import org.cti.wpplugin.layers.editors.gui.WeightItem;
 import org.cti.wpplugin.myplants.CustomPlant;
+import org.cti.wpplugin.utils.Pair;
 import org.pepsoft.worldpainter.Platform;
 import org.pepsoft.worldpainter.layers.AbstractLayerEditor;
 import org.pepsoft.worldpainter.layers.exporters.ExporterSettings;
@@ -36,7 +38,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
     private static String DEFAULT_USER_RESOURCES_DIR = "sage-gardening-data/";
 
     private GardeningLayer tempLayer = new GardeningLayer() ;
-    private Map<String, WeightItem> itemMap = new HashMap<>();   //List of plb ant UI nodes
+    private Map<String, PlantEditor> itemMap = new HashMap<>();   //List of plb ant UI nodes
     private JTabbedPane tabbedPane;
     private JTextField textField1 = new JTextField(10); // 设置列宽
     private PaintPicker paintPicker = new PaintPicker();
@@ -208,6 +210,8 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         gbc.anchor = GridBagConstraints.NORTH; // 组件顶部对齐
         gbc.insets = new Insets(5, 1, 1, 5); // 设置组件之间的间距
 
+        //System.out.println(tempLayer.getPlantMap());
+
         Iterator<Map.Entry<String, JsonNode>> fields = content.fields();
         content.fields().forEachRemaining(field->{
             String groupName = field.getKey();
@@ -222,23 +226,39 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
                 String plantName = afield.getKey();
                 JsonNode itemNode = afield.getValue();
                 CustomPlant customPlant = loadPlantByJson(plantName, title+":"+groupName,itemNode);
-                if (!tempLayer.getPlantMap().containsKey(customPlant))tempLayer.setPlant(customPlant,0);
-                WeightItem weightItem = new WeightItem(title+":"+groupName+":"+plantName,plantName);
-                itemMap.put(weightItem.getId(), weightItem);
-                weightItem.addWeightChangedListener(e->{
-                    tempLayer.setPlant(weightItem.getId(), ((WeightItem)e.getSource()).getValue());
+                if (!tempLayer.getPlantMap().containsKey(customPlant)) tempLayer.setPlant(customPlant,0);
+
+//                WeightItem weightItem = new WeightItem(title+":"+groupName+":"+plantName,plantName);
+//                itemMap.put(weightItem.getId(), weightItem);
+//                weightItem.addWeightChangedListener(e->{
+//                    tempLayer.setPlant(weightItem.getId(), ((WeightItem)e.getSource()).getValue());
+//                    context.settingsChanged();
+//                    computeAllPercent();
+//                });
+//                weightItem.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
+
+                PlantEditor plantEditor = new PlantEditor(title+":"+groupName+":"+plantName, plantName, customPlant);
+                plantEditor.addWeightChangedListener(e->{
+                    tempLayer.setPlant(plantEditor.getId(), ((WeightItem)e.getSource()).getValue());
                     context.settingsChanged();
                     computeAllPercent();
                 });
-                weightItem.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
-                panel.add(weightItem,gbc);
+                plantEditor.addValueChangeListener(e->{
+                    Pair<String,Object> value = (Pair<String,Object>) e.getNewValue();
+                    tempLayer.setPlant(plantEditor.getId(), value.first, value.second);
+                    context.settingsChanged();
+                });
+                itemMap.put(plantEditor.getId(), plantEditor);
+
+
+                panel.add(plantEditor,gbc);
                 //panel.add(new JLabel(plantName),gbc);
             }
         });
         gbc.weighty = 1; // 让这个组件填充剩余空间
         panel.add(new JPanel(), gbc); // 空白面板，作为占位符
 
-        // 添加关闭按钮
+        // TODO 添加关闭按钮
         JButton closeButton = new JButton("delete");
         closeButton.addActionListener(e -> {
             int result = JOptionPane.showConfirmDialog(
@@ -272,12 +292,12 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
 
     private void computeAllPercent(){
         AtomicInteger total = new AtomicInteger();
-        itemMap.values().forEach(value -> total.addAndGet(value.getValue()));
+        itemMap.values().forEach(value -> total.addAndGet(value.getWeight()));
         itemMap.values().forEach(value->{
-            if (value.getValue() == 0) {
+            if (value.getWeight() == 0) {
                 value.setPercentage(0);
             } else {
-                value.setPercentage((float) value.getValue()*100 / (float)total.get());
+                value.setPercentage((float) value.getWeight()*100 / (float)total.get());
             }
         });
     }
@@ -290,8 +310,8 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
 
     @Override
     public void commit() {
-        Map<CustomPlant, Integer> filteredMap = tempLayer.getPlantMap().entrySet().stream()
-                .filter(entry -> entry.getValue() != 0) // 过滤值不为 0 的键值对
+        Map<CustomPlant, GardeningLayer.PlantSetting> filteredMap = tempLayer.getPlantMap().entrySet().stream()
+                .filter(entry -> entry.getValue().weight != 0) // 过滤值不为 0 的键值对
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         layer.setPlantMap(filteredMap);
         layer.setUsedJsons(tempLayer.getUsedJsons());
@@ -339,7 +359,8 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
 
         });
         tempLayer.getPlantMap().forEach((key,value)->{
-            itemMap.get(key.getFullName()).setValue(value);
+            itemMap.get(key.getFullName()).set(value);
+            //System.out.println(itemMap);
         });
         textField1.setText(layer.getName());
         paintPicker.setPaint(layer.getPaint());

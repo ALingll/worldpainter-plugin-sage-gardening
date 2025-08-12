@@ -1,12 +1,15 @@
 package org.cti.wpplugin.myplants.variable;
 
+import org.cti.wpplugin.layers.editors.gui.ValueEditor;
 import org.cti.wpplugin.utils.Range;
+
+import javax.swing.*;
 
 /**
  * @author: ALingll
  * @desc:
  * @create: 2025-08-09 04:16
  **/
-public interface UiVariable<ComponentType> {
-    public abstract ComponentType getComponent();
+public interface UiVariable {
+    public abstract ValueEditor getComponent();
 }

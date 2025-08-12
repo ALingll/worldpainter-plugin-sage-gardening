@@ -58,7 +58,7 @@ class PlantElementTest {
     void TestCreateByJson1() {
         try {
             String jsonString = "\"verdantvibes:lobelia\"";
-            PlantElement plantElement = PlantDecoder.loadPlantElementByJson(new ObjectMapper().readTree(jsonString));
+            PlantElement plantElement = PlantDecoder.loadPlantElementByJson(new ObjectMapper().readTree(jsonString),null);
             System.out.println(plantElement);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -75,7 +75,7 @@ class PlantElementTest {
                     "            \"facing\": [\"north\",\"south\",\"east\",\"west\"]\n" +
                     "          }\n" +
                     "        }";
-            PlantElement plantElement = PlantDecoder.loadPlantElementByJson(new ObjectMapper().readTree(jsonString));
+            PlantElement plantElement = PlantDecoder.loadPlantElementByJson(new ObjectMapper().readTree(jsonString),null);
             System.out.println(plantElement);
             Random random = new Random();
             System.out.println(plantElement.getMaterial(random));

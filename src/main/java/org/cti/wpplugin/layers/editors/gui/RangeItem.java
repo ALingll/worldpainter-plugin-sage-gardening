@@ -6,8 +6,16 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.cti.wpplugin.utils.Range;
 
-public class RangeItem extends JPanel {
+public class RangeItem extends ValueEditor<Range> {
+    @Override
+    public void reset(Range range) {
+        System.out.println("reset "+this.range+"->"+range);
+        this.range = range;
+        highSpinner.setValue(this.range.high);
+        lowSpinner.setValue(this.range.low);
+    }
     private final JSpinner lowSpinner;
+
     private final JSpinner highSpinner;
 
     private final int minLimit;
@@ -15,9 +23,10 @@ public class RangeItem extends JPanel {
 
     private Range range;
 
-    public RangeItem(Range range, int minLimit, int maxLimit) {
+    public RangeItem(Range r, int maxLimit, int minLimit) {
         this.minLimit = minLimit;
         this.maxLimit = maxLimit;
+        this.range = r;
 
         setLayout(new FlowLayout(FlowLayout.LEFT));
 
@@ -41,8 +50,9 @@ public class RangeItem extends JPanel {
                 if (high < low) {
                     highSpinner.setValue(low); // 同步
                 }
-                range.low=low;
-                range.high=high;
+                range.low=(Integer) lowSpinner.getValue();
+                range.high=(Integer) highSpinner.getValue();
+                fireValueChanged(range);
             }
         });
 
@@ -54,8 +64,9 @@ public class RangeItem extends JPanel {
                 if (high < low) {
                     lowSpinner.setValue(high); // 同步
                 }
-                range.low=low;
-                range.high=high;
+                range.low=(Integer) lowSpinner.getValue();
+                range.high=(Integer) highSpinner.getValue();
+                fireValueChanged(range);
             }
         });
     }
@@ -73,5 +84,28 @@ public class RangeItem extends JPanel {
         this.range = range;
         lowSpinner.setValue(range.low);
         highSpinner.setValue(range.high);
+    }
+
+    @Override
+    public String toString(){
+        return this.getClass().getName()+"{"+range+"}";
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("PlantEditor Demo");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
+
+            frame.add(new RangeItem(new Range(2,10),15,1));
+
+
+
+
+
+            frame.pack();
+            frame.setSize(400, 300);
+            frame.setVisible(true);
+        });
     }
 }
