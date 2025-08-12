@@ -15,16 +15,61 @@ import org.pepsoft.worldpainter.layers.exporters.ExporterSettings;
 import org.pepsoft.worldpainter.objects.WPObject;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.Serial;
+import java.io.Serializable;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
 
 import static org.pepsoft.worldpainter.layers.Layer.DataSize.BIT;
 
 public class GardeningLayer extends CustomLayer {
     public GardeningLayer() {
-        super(NAME, DESCRIPTION, DATA_SIZE, PRIORITY, COLOUR);
+        super(NAME, DESCRIPTION, DATA_SIZE, PRIORITY, Color.GREEN);
+        this.setPaint(createStarImage());
+    }
+
+    private static BufferedImage createStarImage() {
+        int size = 16;
+        BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = image.createGraphics();
+
+        // 抗锯齿，让图形更平滑
+        //g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // 1. 背景：蓝色
+        g.setColor(new Color(91,170,223));
+        g.fillRect(0, 0, size, size);
+
+        // 2. 五角星坐标
+        int centerX = size / 2;
+        int centerY = size / 2;
+        int outerRadius = 7;
+        int innerRadius = 3;
+        int points = 10;
+        int[] xPoints = new int[points];
+        int[] yPoints = new int[points];
+
+        for (int i = 0; i < points; i++) {
+            double angle = Math.toRadians(-90 + i * 36);
+            int radius = (i % 2 == 0) ? outerRadius : innerRadius;
+            xPoints[i] = centerX + (int) Math.round(Math.cos(angle) * radius);
+            yPoints[i] = centerY + (int) Math.round(Math.sin(angle) * radius);
+        }
+
+        // 3. 白色星星填充
+        g.setColor(Color.WHITE);
+        g.fillPolygon(xPoints, yPoints, points);
+
+        // 4. 粉色边框
+        g.setColor(Color.PINK);
+        g.setStroke(new BasicStroke(1));
+        g.drawPolygon(xPoints, yPoints, points);
+
+        g.dispose();
+        return image;
     }
 
     /**
@@ -249,7 +294,7 @@ public class GardeningLayer extends CustomLayer {
         }
     }
 
-    public class PlantSetting{
+    public static class PlantSetting implements Serializable {
         public int weight = 0;
         public Map<String, Object> uiProperties = new HashMap<>();
         public PlantSetting(int weight){

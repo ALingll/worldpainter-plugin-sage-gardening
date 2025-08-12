@@ -1,5 +1,6 @@
 package org.cti.wpplugin.myplants.variable;
 
+import java.io.Serializable;
 import java.util.Random;
 
 /**
@@ -7,7 +8,7 @@ import java.util.Random;
  * @desc:
  * @create: 2025-08-09 03:27
  **/
-public class Variable<V> {
+public class Variable<V> implements Serializable {
     protected V variable;
     public Variable(V v) {this.variable=v;}
     public final V getValue() {return variable;}

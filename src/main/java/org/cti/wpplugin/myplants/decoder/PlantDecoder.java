@@ -156,7 +156,6 @@ public class PlantDecoder {
                                             range.low = defaultRange.low;
                                         });
                                         RangeItemVar rangeItemVar = new RangeItemVar(range,maxValue,minValue);
-                                        System.out.println(range);
                                         result.setNamedVar(varName, rangeItemVar);
                                         result.setUiVar(varName, rangeItemVar);
                                         break;

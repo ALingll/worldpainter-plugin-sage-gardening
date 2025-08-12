@@ -274,8 +274,8 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
             if (selectedIndex != -1) {
                 String selectedTitle = tabbedPane.getTitleAt(selectedIndex);
                 for(Component component:((Container)tabbedPane.getComponentAt(selectedIndex)).getComponents()){
-                    if(component instanceof WeightItem){
-                        String id = ((WeightItem) component).getId();
+                    if(component instanceof PlantEditor){
+                        String id = ((PlantEditor) component).getId();
                         itemMap.remove(id);
                         tempLayer.getPlantMap().entrySet().removeIf(entry -> entry.getKey().getFullName().equals(id));
                     }

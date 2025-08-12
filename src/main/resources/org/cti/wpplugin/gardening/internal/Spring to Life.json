@@ -36,7 +36,7 @@
       "cactus": {
         "settings": {
           "ui_properties": {
-            "a_ui_number": {
+            "height": {
               "type": "range",
               "max": 10,
               "min": 1,
@@ -47,7 +47,7 @@
         "data": [
           {
             "block": "minecraft:cactus",
-            "times": "#a_ui_number"
+            "times": "#height"
           },
           {
             "block": "minecraft:cactus_flower",

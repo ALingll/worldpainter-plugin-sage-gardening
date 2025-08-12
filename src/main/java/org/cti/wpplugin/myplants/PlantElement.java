@@ -5,9 +5,13 @@ import org.cti.wpplugin.myplants.variable.SingleChoiceVar;
 import org.cti.wpplugin.utils.Range;
 import org.pepsoft.minecraft.Material;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.*;
 
-public class PlantElement {
+public class PlantElement implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     private Material material;
     private Map<String, SingleChoiceVar> properties = new HashMap<>();
     private RandomVariable<Integer> times;

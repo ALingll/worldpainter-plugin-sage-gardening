@@ -15,3 +15,6 @@ This is a plugin for WorldPainter, which provides a new layer called **Gardening
 ## Configuration
 
 The json file provided by the user should be placed in the `plugin_data\gardening_layer` subdirectory under the worldpainter configuration file directory. For example, on Windows, it would be like `C:\Users\{UserName}\AppData\Roaming\WorldPainter\plugin_data\gardening_layer\{YourJson}.json`
+
+---
+© 2025 CTI-ALingll. All rights reserved.

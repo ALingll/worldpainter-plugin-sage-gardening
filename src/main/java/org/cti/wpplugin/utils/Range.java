@@ -1,11 +1,12 @@
 package org.cti.wpplugin.utils;
 
+import java.io.Serializable;
 import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
 
-public class Range {
+public class Range implements Serializable {
     public int low;
     public int high;
 
@@ -15,7 +16,7 @@ public class Range {
     }
 
     public int random(Random a_random){
-        System.out.println("Random "+this);
+        //System.out.println("Random "+this);
         return low==high ? low : a_random.nextInt(high-low+1)+low;
     }
 
