@@ -6,7 +6,7 @@
 
     <groupId>org.cti.wpplugin</groupId>
     <artifactId>worldpainter-plugin-sage-gardening</artifactId>
-    <version>0.3.6</version>
+    <version>1.0.0</version>
 
     <dependencies>
         <dependency>

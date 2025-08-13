@@ -1,0 +1,464 @@
+{
+  "metadata": {
+    "provides": ["High Plants"],
+    "author": "ALingll",
+    "encoder_v": "beta-1.0"
+  },
+  "High Plants": {
+    "High Plants":{
+      "high sunflower": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "minecraft:sunflower",
+            "times": "#height",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block": "minecraft:sunflower",
+            "properties": {
+              "half": "upper"
+            }
+          }
+        ]
+      },
+      "high dandelion": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "minecraft:sunflower",
+            "times": "#height",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block": "minecraft:dandelion"
+          }
+        ]
+      },
+      "high poppy": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "minecraft:sunflower",
+            "times": "#height",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block": "minecraft:poppy"
+          }
+        ]
+      },
+      "high blue orchid": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "minecraft:sunflower",
+            "times": "#height",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block": "minecraft:blue_orchid"
+          }
+        ]
+      },
+      "high allium": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "minecraft:sunflower",
+            "times": "#height",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block": "minecraft:allium"
+          }
+        ]
+      },
+      "high azure bluet": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "minecraft:sunflower",
+            "times": "#height",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block": "minecraft:azure_bluet"
+          }
+        ]
+      },
+      "high red tulip": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "minecraft:sunflower",
+            "times": "#height",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block": "minecraft:red_tulip"
+          }
+        ]
+      },
+      "high orange tulip": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "minecraft:sunflower",
+            "times": "#height",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block": "minecraft:orange_tulip"
+          }
+        ]
+      },
+      "high white tulip": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "minecraft:sunflower",
+            "times": "#height",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block": "minecraft:white_tulip"
+          }
+        ]
+      },
+      "high pink tulip": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "minecraft:sunflower",
+            "times": "#height",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block": "minecraft:pink_tulip"
+          }
+        ]
+      },
+      "high oxeye daisy": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "minecraft:sunflower",
+            "times": "#height",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block": "minecraft:oxeye_daisy"
+          }
+        ]
+      },
+      "high cornflower": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "minecraft:sunflower",
+            "times": "#height",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block": "minecraft:cornflower"
+          }
+        ]
+      },
+      "high lily of the valley": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "minecraft:sunflower",
+            "times": "#height",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block": "minecraft:lily_of_the_valley"
+          }
+        ]
+      },
+      "high torchflower": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "minecraft:sunflower",
+            "times": "#height",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block": "minecraft:torchflower"
+          }
+        ]
+      },
+      "high pitcher plant": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "minecraft:sunflower",
+            "times": "#height",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block": "minecraft:pitcher_plant",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block": "minecraft:pitcher_plant",
+            "properties": {
+              "half": "upper"
+            }
+          }
+        ]
+      },
+      "high lilac": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "minecraft:lilac",
+            "times": "#height",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block": "minecraft:lilac",
+            "properties": {
+              "half": "upper"
+            }
+          }
+        ]
+      },
+      "high rose bush": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "minecraft:rose_bush",
+            "times": "#height",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block": "minecraft:rose_bush",
+            "properties": {
+              "half": "upper"
+            }
+          }
+        ]
+      },
+      "high peony": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "minecraft:peony",
+            "times": "#height",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block": "minecraft:peony",
+            "properties": {
+              "half": "upper"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

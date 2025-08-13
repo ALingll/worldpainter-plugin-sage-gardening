@@ -10,7 +10,7 @@ This is a plugin for WorldPainter, which provides a new layer called **Gardening
 ## TODO
 - The current configuration structure writing is too complex and may be simplified in the future.
 - Aquatic plants are not currently supported, but may be in the future.
-- There is currently no documentation on how to write configuration JSON structures. However, a built-in configuration is provided for [reference](src/main/resources/org/cti/wpplugin/gardening/internal/verdantvibes-2.json), which supports the new vegetation added by the [VerdantVibes](https://github.com/Pandarix/VerdantVibes) mod.
+- There is currently no documentation on how to write configuration JSON structures. However, a built-in configuration is provided for [reference](src/main/resources/org/cti/wpplugin/gardening/internal/Verdantvibes.json), which supports the new vegetation added by the [VerdantVibes](https://github.com/Pandarix/VerdantVibes) mod.
 
 ## Configuration
 
