@@ -2,6 +2,7 @@ package org.cti.wpplugin.myplants;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.pepsoft.worldpainter.biomeschemes.BiomeSchemeManager;
 
 import static org.cti.wpplugin.myplants.decoder.PlantDecoder.loadPlantByJson;
 
@@ -99,5 +100,10 @@ class CustomPlantTest {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    @Test
+    void testMc(){
+        //System.out.println();
     }
 }

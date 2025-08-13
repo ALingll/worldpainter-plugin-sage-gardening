@@ -9,10 +9,11 @@ import org.cti.wpplugin.utils.Range;
 public class RangeItem extends ValueEditor<Range> {
     @Override
     public void reset(Range range) {
-        System.out.println("reset "+this.range+"->"+range);
+        //System.out.println("reset "+this.range+"->"+range);
+        highSpinner.setValue(range.high);
+        lowSpinner.setValue(range.low);
         this.range = range;
-        highSpinner.setValue(this.range.high);
-        lowSpinner.setValue(this.range.low);
+        //System.out.println("reset2 "+this.range+"->"+range);
     }
     private final JSpinner lowSpinner;
 

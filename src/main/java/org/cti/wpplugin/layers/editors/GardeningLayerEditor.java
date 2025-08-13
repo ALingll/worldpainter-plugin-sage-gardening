@@ -55,6 +55,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
     }
 
     private void initGUI() {
+
         tabbedPane = new JTabbedPane(JTabbedPane.LEFT, JTabbedPane.SCROLL_TAB_LAYOUT);
         tabbedPane.setMinimumSize(new Dimension(1000,500));
 
@@ -188,7 +189,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         });
     }
 
-    private Optional<JPanel> createTabPanel(String title, JsonNode content) {
+    private Optional<JScrollPane> createTabPanel(String title, JsonNode content) {
         for (int i = 0; i < tabbedPane.getTabCount(); i++) {
             if (tabbedPane.getTitleAt(i).equals(title)) {
                 JOptionPane.showMessageDialog(null,
@@ -250,7 +251,6 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
                 });
                 itemMap.put(plantEditor.getId(), plantEditor);
 
-
                 panel.add(plantEditor,gbc);
                 //panel.add(new JLabel(plantName),gbc);
             }
@@ -273,7 +273,8 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
             int selectedIndex = tabbedPane.getSelectedIndex();
             if (selectedIndex != -1) {
                 String selectedTitle = tabbedPane.getTitleAt(selectedIndex);
-                for(Component component:((Container)tabbedPane.getComponentAt(selectedIndex)).getComponents()){
+                JPanel plantPanel = (JPanel) ((JScrollPane) tabbedPane.getComponentAt(selectedIndex)).getViewport().getView();
+                for(Component component: plantPanel.getComponents()){
                     if(component instanceof PlantEditor){
                         String id = ((PlantEditor) component).getId();
                         itemMap.remove(id);
@@ -287,7 +288,12 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         });
         panel.add(closeButton,0);
 
-        return Optional.ofNullable(panel);
+        // 创建带滚动条的 JScrollPane
+        JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED); // 始终显示垂直滚动条
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        return Optional.ofNullable(scrollPane);
     }
 
     private void computeAllPercent(){
