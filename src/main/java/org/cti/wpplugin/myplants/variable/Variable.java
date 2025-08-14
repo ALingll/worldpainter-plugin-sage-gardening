@@ -13,4 +13,6 @@ public class Variable<V> implements Serializable {
     public Variable(V v) {this.variable=v;}
     public final V getValue() {return variable;}
     public final void setValue(V v) {this.variable=v;}
+    @Override
+    public String toString(){return variable+"@"+Integer.toHexString(System.identityHashCode(this));}
 }

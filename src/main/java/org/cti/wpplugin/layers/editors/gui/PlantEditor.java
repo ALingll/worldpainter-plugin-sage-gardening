@@ -116,7 +116,7 @@ public class PlantEditor extends ValueEditor<CustomPlant> {
                 entry -> {
                     String varId = entry.getKey();
                     UiVariable variable = entry.getValue();
-                    addExtraComponent(varId, variable.getComponent());
+                    addExtraComponent(varId, variable.getComponent(), variable.getDesc());
                 }
         );
     }
@@ -133,6 +133,7 @@ public class PlantEditor extends ValueEditor<CustomPlant> {
         setWeight(setting.weight);
         setting.uiProperties.forEach((key,value)->{
             extraComponents.get(key).reset(value);
+            System.out.println(key+"\t"+value+"\t"+extraComponents.get(key).getClass());
         });
     }
 
@@ -149,7 +150,7 @@ public class PlantEditor extends ValueEditor<CustomPlant> {
         weightItem.removeWeightChangedListener(listener);
     }
 
-    public void addExtraComponent(String id, ValueEditor comp) {
+    public void addExtraComponent(String id, ValueEditor comp, String desc) {
         comp.addValueChangeListener(e->{
             fireValueChanged(Pair.makePair(id,e.getNewValue()));
         });
@@ -157,8 +158,12 @@ public class PlantEditor extends ValueEditor<CustomPlant> {
         extraComponents.put(id,comp);
 
         JPanel row = new JPanel(new BorderLayout(5, 5));
+
+        JLabel idLabel = new JLabel(id);
+        idLabel.setToolTipText(desc);
+
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        row.add(new JLabel(id),BorderLayout.WEST);
+        row.add(idLabel,BorderLayout.WEST);
         row.add(comp,BorderLayout.CENTER);
         row.setAlignmentX(LEFT_ALIGNMENT);
 

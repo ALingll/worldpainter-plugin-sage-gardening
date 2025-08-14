@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.cti.wpplugin.layers.editors.gui.ValueEditor;
 import org.cti.wpplugin.layers.exporters.GardeningLayerExporter;
 import org.cti.wpplugin.myplants.CustomPlant;
+import org.cti.wpplugin.myplants.variable.ProbabilityVar;
 import org.cti.wpplugin.utils.Pair;
 import org.pepsoft.worldpainter.Dimension;
 import org.pepsoft.worldpainter.Platform;
@@ -144,13 +145,15 @@ public class GardeningLayer extends CustomLayer {
     public boolean isCheckFoundation() {
         return checkFoundation;
     }
-
     public void setCheckFoundation(boolean checkFoundation) {
         this.checkFoundation = checkFoundation;
     }
 
     private boolean checkFoundation = false;
+    private int density = 100;
 
+    public void setDensity(int density){this.density=density;}
+    public int getDensity(){return this.density;}
 
     public void putJsonNode(String fileName, JsonNode metaData, JsonNode jsonNode){usedJsons.put(fileName, new Pair<>(metaData,jsonNode));}
 
@@ -191,7 +194,7 @@ public class GardeningLayer extends CustomLayer {
             public WPObject getObject() {
                 if(customPlantList.isEmpty()||sum.get()==0)
                     return null;
-                return customPlantList.get(index.get(random.nextInt(sum.get()))).nextObject(random);
+                return random.nextFloat()*100<=density ? customPlantList.get(index.get(random.nextInt(sum.get()))).nextObject(random) : null;
             }
 
             @Override

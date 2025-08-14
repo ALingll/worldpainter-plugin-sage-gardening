@@ -37,10 +37,16 @@
         "settings": {
           "ui_properties": {
             "height": {
+              "desc": "Height of cactus stem",
               "type": "range",
               "max": 10,
               "min": 1,
               "default": "2~5"
+            },
+            "flower": {
+              "desc": "Chance of spawning a cactus flower on top of a cactus",
+              "type": "percent",
+              "default": "50%"
             }
           }
         },
@@ -51,7 +57,7 @@
           },
           {
             "block": "minecraft:cactus_flower",
-            "times": "0~1"
+            "times": "#flower"
           }
         ]
       }

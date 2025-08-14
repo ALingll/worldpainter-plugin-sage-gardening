@@ -12,4 +12,6 @@ import javax.swing.*;
  **/
 public interface UiVariable {
     public abstract ValueEditor getComponent();
+    public void setDesc(String s);
+    public String getDesc();
 }

@@ -10,7 +10,7 @@ import java.util.Random;
  * @desc:
  * @create: 2025-08-09 03:30
  **/
-public class RangeVar extends RandomVariable<Integer>{
+public class RangeVar extends AbstractIntVar{
 
     public Range range;
 

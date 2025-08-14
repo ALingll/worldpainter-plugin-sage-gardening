@@ -3,10 +3,7 @@ package org.cti.wpplugin.myplants.decoder;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.cti.wpplugin.myplants.CustomPlant;
 import org.cti.wpplugin.myplants.PlantElement;
-import org.cti.wpplugin.myplants.variable.RandomVariable;
-import org.cti.wpplugin.myplants.variable.RangeItemVar;
-import org.cti.wpplugin.myplants.variable.RangeVar;
-import org.cti.wpplugin.myplants.variable.SingleChoiceVar;
+import org.cti.wpplugin.myplants.variable.*;
 import org.cti.wpplugin.utils.BlockTags;
 import org.cti.wpplugin.utils.Pair;
 import org.cti.wpplugin.utils.Range;
@@ -15,11 +12,14 @@ import org.pepsoft.minecraft.Material;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static org.cti.wpplugin.utils.FormatString.asPercent;
+import static org.cti.wpplugin.utils.FormatString.asRange;
 import static org.cti.wpplugin.utils.JsonUtils.*;
 
 public class PlantDecoder {
 
     public static final String FOUNDATIONS_TAG = "foundations";
+    public static final String DESCRIPTION_TAG = "desc";
     public static final String META_DATA_TAG = "metadata";
     public static final String DECODER_VERSION = "beta-1.0";
     public static final String ENCODER_VERSION_TAG = "encoder_v";
@@ -85,10 +85,11 @@ public class PlantDecoder {
                             .ifPresentOrElse(
                                     id -> {
                                         if(parent == null) throw new IllegalArgumentException("Parent is null.");
-                                        times.set(parent.getNamedVar(id, RangeVar.class));
+                                        //System.out.println(id+" "+parent.getNamedVar(id, AbstractIntVar.class));
+                                        times.set(parent.getNamedVar(id, AbstractIntVar.class));
                                     },
                                     () -> {
-                                        Range range = Range.asRange(node.textValue());
+                                        Range range = asRange(node.textValue());
                                         times.set(new RangeVar(range));
                                     }
                             );
@@ -145,19 +146,40 @@ public class PlantDecoder {
                             ui_properties.properties().forEach(item ->{
                                 String varName = item.getKey();
                                 JsonNode varBody = item.getValue();
+                                UiVariable uiVariable = null;
                                 switch (strictGet(varBody,UI_TYPE_TAG).textValue()){
                                     case "range" : {
                                         int maxValue = strictGet(varBody,UI_MAX_VALUE_TAG).asInt();
                                         int minValue = strictGet(varBody,UI_MIN_VALUE_TAG).asInt();
                                         Range range = new Range(maxValue,minValue);
                                         optionalGet(varBody,UI_DEFAULT_VALUE_TAG).ifPresent(node ->{
-                                            Range defaultRange = Range.asRange(node.textValue());
+                                            Range defaultRange = asRange(node.textValue());
                                             range.high = defaultRange.high;
                                             range.low = defaultRange.low;
                                         });
                                         RangeItemVar rangeItemVar = new RangeItemVar(range,maxValue,minValue);
+                                        uiVariable = rangeItemVar;
                                         result.setNamedVar(varName, rangeItemVar);
                                         result.setUiVar(varName, rangeItemVar);
+                                        break;
+                                    }
+                                    case "percent":{
+                                        AtomicReference<Float> value = new AtomicReference<>((float) 50);
+                                        optionalGet(varBody,UI_DEFAULT_VALUE_TAG).ifPresent(
+                                                p -> {
+                                                    float temp;
+                                                    try {
+                                                        temp = asPercent(p.textValue());
+                                                        value.set(temp);
+                                                    }catch (IllegalArgumentException e){
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                        );
+                                        ProbabilityVar probabilityVar = new ProbabilityVar(value.get());
+                                        uiVariable = probabilityVar;
+                                        result.setNamedVar(varName, probabilityVar);
+                                        result.setUiVar(varName, probabilityVar);
                                         break;
                                     }
                                     default:
@@ -166,6 +188,10 @@ public class PlantDecoder {
                                                 +strictGet(varBody,UI_TYPE_TAG).textValue()
                                                 +"\"");
                                 }
+                                UiVariable finalUiVariable = uiVariable;
+                                optionalGet(varBody, DESCRIPTION_TAG).ifPresent(desc ->{
+                                    finalUiVariable.setDesc(desc.textValue());
+                                });
                             });
                         });
                     }

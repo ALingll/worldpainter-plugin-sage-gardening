@@ -14,15 +14,31 @@ import javax.swing.*;
 public class RangeItemVar extends RangeVar implements UiVariable{
     int min;
     int max;
+    String desc = null;
 
-    public RangeItemVar(Range range, int max, int min) {
+    public RangeItemVar(Range range, int max, int min){
+        this(range, max, min, null);
+    }
+    public RangeItemVar(Range range, int max, int min, String desc) {
         super(range);
         this.max=max;
         this.min=min;
+        this.desc = desc;
     }
 
     @Override
     public ValueEditor<Range> getComponent() {
         return new RangeItem(range,max,min);
     }
+
+    @Override
+    public void setDesc(String s) {
+        this.desc = s;
+    }
+
+    @Override
+    public String getDesc() {
+        return desc;
+    }
+
 }

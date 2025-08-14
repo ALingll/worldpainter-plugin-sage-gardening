@@ -25,26 +25,6 @@ public class Range implements Serializable {
         IntStream.range(low,high).forEach(intConsumer);
     }
 
-    public static Range asRange(String text){
-        int a, b;
-        text = text.trim();
-        if (text.contains("~")) {
-            String[] parts = text.split("~");
-            if (parts.length != 2) {
-                throw new IllegalArgumentException("Invalid range format: " + text);
-            }
-            a = Integer.parseInt(parts[0].trim());
-            b = Integer.parseInt(parts[1].trim());
-        } else {
-            try {
-                a = b = Integer.parseInt(text);
-            } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Invalid range format: " + text);
-            }
-        }
-        return new Range(a,b);
-    }
-
     public static Range range(int low, int high){return new Range(low,high);}
 
     @Override

@@ -3,9 +3,12 @@ package org.cti.wpplugin.layers.editors;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cti.wpplugin.layers.GardeningLayer;
+import org.cti.wpplugin.layers.editors.gui.PercentageItem;
 import org.cti.wpplugin.layers.editors.gui.PlantEditor;
 import org.cti.wpplugin.layers.editors.gui.WeightItem;
 import org.cti.wpplugin.myplants.CustomPlant;
+import org.cti.wpplugin.myplants.variable.ProbabilityVar;
+import org.cti.wpplugin.myplants.variable.Variable;
 import org.cti.wpplugin.utils.Pair;
 import org.pepsoft.worldpainter.Platform;
 import org.pepsoft.worldpainter.layers.AbstractLayerEditor;
@@ -28,6 +31,7 @@ import java.util.stream.Stream;
 
 import static org.cti.wpplugin.myplants.decoder.PlantDecoder.*;
 import static org.cti.wpplugin.utils.JsonUtils.*;
+import static org.cti.wpplugin.utils.debug.DebugUtils.sayCalled;
 
 public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
 
@@ -42,6 +46,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
     private JTabbedPane tabbedPane;
     private JTextField textField1 = new JTextField(10); // 设置列宽
     private PaintPicker paintPicker = new PaintPicker();
+    private JSpinner densityItem = new JSpinner(new SpinnerNumberModel(100, 0, 100, 1));
 
     public GardeningLayerEditor(){
         initGUI();
@@ -143,14 +148,29 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         textField1.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
         // 第二个标签和文本框
         JLabel label2 = new JLabel("Paint:");
+
+        JLabel label3 = new JLabel("Density:");
+        label3.setToolTipText("Sets the global probability of vegetation spawning, where 100% will generate a plant at every pixel.");
+        JLabel label4 = new JLabel("%");
+        densityItem.addChangeListener(e->{
+            tempLayer.setDensity((Integer) densityItem.getValue());
+            context.settingsChanged();
+        });
+
+
         // 给两个标签一点右边距，使间距更好看
         label1.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
         label2.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 5));
+        label3.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 5));
+        label4.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 5));
         // 添加组件到横向面板
         inputRow.add(label1);
         inputRow.add(textField1);
         inputRow.add(label2);
         inputRow.add(paintPicker);
+        inputRow.add(label3);
+        inputRow.add(densityItem);
+        inputRow.add(label4);
         // 设置面板最大宽度撑满
         inputRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
@@ -316,6 +336,8 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
 
     @Override
     public void commit() {
+        sayCalled();
+
         Map<CustomPlant, GardeningLayer.PlantSetting> filteredMap = tempLayer.getPlantMap().entrySet().stream()
                 .filter(entry -> entry.getValue().weight != 0) // 过滤值不为 0 的键值对
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -326,11 +348,14 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
 
     @Override
     public GardeningLayer getLayer(){
+        sayCalled();
         return super.getLayer();
     }
 
     @Override
     public void setLayer(GardeningLayer layer) {
+        sayCalled();
+        System.out.println(layer);
         super.setLayer(layer);
         if(layer==null)
             tempLayer = createLayer();
@@ -341,6 +366,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
 
     @Override
     public void reset() {
+        sayCalled();
         // Reset the UI to the values currently in the layer
         tempLayer.getUsedJsons().forEach((provide,value)->{
             JsonNode metaData = value.first;
@@ -366,15 +392,17 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         });
         tempLayer.getPlantMap().forEach((key,value)->{
             itemMap.get(key.getFullName()).set(value);
-            //System.out.println(itemMap);
+            //System.out.println(value);
         });
         textField1.setText(layer.getName());
         paintPicker.setPaint(layer.getPaint());
         paintPicker.setOpacity(layer.getOpacity());
+        densityItem.setValue(layer.getDensity());
     }
 
     @Override
     public ExporterSettings getSettings() {
+        sayCalled();
         if (! isCommitAvailable()) {
             throw new IllegalStateException("Settings invalid or incomplete");
         }
@@ -396,10 +424,12 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
     }
 
     private GardeningLayer saveSettings(GardeningLayer layer) {
+        sayCalled();
         if(layer==null)
             layer = createLayer();
         layer.setPaint(paintPicker.getPaint());
         layer.setOpacity(paintPicker.getOpacity());
+        layer.setDensity((Integer) densityItem.getValue());
         layer.setName(textField1.getText());
         return layer;
     }
