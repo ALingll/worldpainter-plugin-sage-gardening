@@ -1,10 +1,12 @@
 package org.cti.wpplugin.layers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.cti.wpplugin.layers.editors.GardeningLayerEditor;
 import org.cti.wpplugin.layers.editors.gui.ValueEditor;
 import org.cti.wpplugin.layers.exporters.GardeningLayerExporter;
 import org.cti.wpplugin.myplants.CustomPlant;
 import org.cti.wpplugin.myplants.variable.ProbabilityVar;
+import org.cti.wpplugin.myplants.variable.UiVariable;
 import org.cti.wpplugin.utils.Pair;
 import org.pepsoft.worldpainter.Dimension;
 import org.pepsoft.worldpainter.Platform;
@@ -24,6 +26,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
+import static java.lang.Enum.valueOf;
+import static org.cti.wpplugin.utils.debug.DebugUtils.classStr;
 import static org.pepsoft.worldpainter.layers.Layer.DataSize.BIT;
 
 public class GardeningLayer extends CustomLayer {
@@ -214,6 +218,14 @@ public class GardeningLayer extends CustomLayer {
         };
     }
 
+    public PlantSetting getSetting(CustomPlant plant){
+        return plantMap.get(plant);
+    }
+
+    public void remove(CustomPlant plant){
+        plantMap.remove(plant);
+    }
+
     private CustomPlant getPlant(String name, String domain){
         Optional<Map.Entry<CustomPlant, PlantSetting>> result = plantMap.entrySet()
                 .stream()
@@ -228,6 +240,11 @@ public class GardeningLayer extends CustomLayer {
                 .filter(entry -> entry.getKey().getFullName().equals(fullId))
                 .findFirst();
         return result.get().getKey();
+    }
+
+    public GardeningLayer setPlant(CustomPlant customPlant, PlantSetting setting){
+        plantMap.put(customPlant,setting);
+        return this;
     }
 
     public GardeningLayer setPlant(CustomPlant customPlant, int weight) {
@@ -264,12 +281,12 @@ public class GardeningLayer extends CustomLayer {
 
 
 
-    @Override
-    public String toString(){
-        Map<String,Integer> map = new HashMap<>();
-        plantMap.forEach((key,value)->map.put(key.getFullName(),value.weight));
-        return map+"\n"+usedJsons.keySet();
-    }
+//    @Override
+//    public String toString(){
+//        Map<String,Integer> map = new HashMap<>();
+//        plantMap.forEach((key,value)->map.put(key.getFullName(),value.weight));
+//        return map+"\n"+usedJsons.keySet();
+//    }
 
     @Override
     public GardeningLayer clone() {
@@ -279,6 +296,60 @@ public class GardeningLayer extends CustomLayer {
         layer.usedJsons = new HashMap<>();
         layer.usedJsons.putAll(this.usedJsons);
         return layer;
+    }
+
+    public void copyFrom(GardeningLayer layer){
+        this.usedJsons = layer.getUsedJsonsDeepCopy();
+        this.density = layer.density;
+        this.checkFoundation = layer.checkFoundation;
+        this.plantMap = new HashMap<>();
+        this.plantMap.putAll(layer.plantMap);
+//        Map<CustomPlant, GardeningLayer.PlantSetting> oldMap = layer.plantMap;
+//        this.plantMap.forEach((key,value)->{
+//            if(!oldMap.containsKey(key))
+//                this.plantMap.remove(key);
+//            else{
+//                value.uiProperties.forEach((nameKey,obj)->{
+//
+//                });
+//                Map<String,Object> oldUiProperties = oldMap.get(key).uiProperties;
+//                key.getAllUiVar().forEach(entry -> {
+//                    String id = entry.getKey();
+//                    UiVariable uiVariable = entry.getValue();
+//                    uiVariable.copyFrom(oldUiProperties.get(id));
+//                });
+//            }
+//        });
+//        oldMap.forEach((key,value)->{
+//            if(!this.plantMap.containsKey(key)) this.plantMap.put(key,value);
+//        });
+    }
+
+    private Map<String, Pair<JsonNode, JsonNode>> getUsedJsonsDeepCopy() {
+        Map<String, Pair<JsonNode, JsonNode>> copy = new HashMap<>();
+        for (Map.Entry<String, Pair<JsonNode, JsonNode>> entry : usedJsons.entrySet()) {
+            String keyCopy = entry.getKey(); // String 不可变，直接引用没问题
+            JsonNode leftCopy = entry.getValue().first == null
+                    ? null
+                    : entry.getValue().first.deepCopy();
+            JsonNode rightCopy = entry.getValue().second == null
+                    ? null
+                    : entry.getValue().second.deepCopy();
+            copy.put(keyCopy, Pair.makePair(leftCopy, rightCopy));
+        }
+
+        return copy;
+    }
+
+    @Override
+    public String toString(){
+        final String[] mapStr = {""};
+        plantMap.forEach((key,value)->{
+            mapStr[0] = mapStr[0]+"(key="+key.toString().replace("\n","\n\t")+",\nvalue="+value+"\n";
+        });
+        return classStr(this)+"{\n"
+                +"\tplantMap=\t"+classStr(plantMap)+mapStr[0].replace("\n","\n\t")+"\n"
+                +"}";
     }
 
     public enum FoundationHandle{
@@ -308,6 +379,7 @@ public class GardeningLayer extends CustomLayer {
             this.uiProperties = uiProperties;
         }
         @Override
-        public String toString(){return String.format("{w=%d,p=%s}",weight,uiProperties);}
+        public String toString(){return classStr(this)+String.format("{w=%d,p=%s}",weight,uiProperties);}
+
     }
 }

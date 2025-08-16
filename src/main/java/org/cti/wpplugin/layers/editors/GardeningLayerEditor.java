@@ -247,7 +247,15 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
                 String plantName = afield.getKey();
                 JsonNode itemNode = afield.getValue();
                 CustomPlant customPlant = loadPlantByJson(plantName, title+":"+groupName,itemNode);
-                if (!tempLayer.getPlantMap().containsKey(customPlant)) tempLayer.setPlant(customPlant,0);
+                if (!tempLayer.getPlantMap().containsKey(customPlant)) {
+                    tempLayer.setPlant(customPlant,0);
+                }
+                else {
+                    GardeningLayer.PlantSetting setting = tempLayer.getSetting(customPlant);
+                    GardeningLayer.PlantSetting newSetting = customPlant.enable(setting);
+                    tempLayer.remove(customPlant);
+                    tempLayer.setPlant(customPlant,newSetting);
+                }
 
 //                WeightItem weightItem = new WeightItem(title+":"+groupName+":"+plantName,plantName);
 //                itemMap.put(weightItem.getId(), weightItem);
@@ -275,6 +283,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
                 //panel.add(new JLabel(plantName),gbc);
             }
         });
+        //System.out.println("Old layer4:"+layer);
         gbc.weighty = 1; // 让这个组件填充剩余空间
         panel.add(new JPanel(), gbc); // 空白面板，作为占位符
 
@@ -341,27 +350,27 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         Map<CustomPlant, GardeningLayer.PlantSetting> filteredMap = tempLayer.getPlantMap().entrySet().stream()
                 .filter(entry -> entry.getValue().weight != 0) // 过滤值不为 0 的键值对
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        layer.setPlantMap(filteredMap);
-        layer.setUsedJsons(tempLayer.getUsedJsons());
-        saveSettings(layer);
-    }
+        tempLayer.setPlantMap(filteredMap);
 
-    @Override
-    public GardeningLayer getLayer(){
-        sayCalled();
-        return super.getLayer();
+        saveSettings(layer);
+
+        //System.out.println("Commit layer:"+layer);
+        tempLayer = new GardeningLayer();
     }
 
     @Override
     public void setLayer(GardeningLayer layer) {
-        sayCalled();
-        System.out.println(layer);
+        //sayCalled();
+        //System.out.println("Old layer:"+layer);
         super.setLayer(layer);
-        if(layer==null)
-            tempLayer = createLayer();
-        else
-            tempLayer = layer.clone();
+
+        tempLayer.copyFrom(layer);
+        //System.out.println("New layer1:"+tempLayer);
+        //System.out.println("Old layer1:"+layer);
+
         reset();
+        //System.out.println("New layer2:"+tempLayer);
+        //System.out.println("Old layer2:"+layer);
     }
 
     @Override
@@ -390,6 +399,8 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
             });
 
         });
+        //System.out.println("New layer3:"+tempLayer);
+        //System.out.println("Old layer3:"+layer);
         tempLayer.getPlantMap().forEach((key,value)->{
             itemMap.get(key.getFullName()).set(value);
             //System.out.println(value);
@@ -406,7 +417,9 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         if (! isCommitAvailable()) {
             throw new IllegalStateException("Settings invalid or incomplete");
         }
-        final GardeningLayer previewLayer = saveSettings(this.layer);
+        //System.out.println("A:"+layer);
+        final GardeningLayer previewLayer = saveSettings(null);
+        //System.out.println("B:"+layer);
         return new ExporterSettings() {
             @Override
             public boolean isApplyEverywhere() {
@@ -431,6 +444,9 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         layer.setOpacity(paintPicker.getOpacity());
         layer.setDensity((Integer) densityItem.getValue());
         layer.setName(textField1.getText());
+
+        layer.copyFrom(tempLayer);
+
         return layer;
     }
 

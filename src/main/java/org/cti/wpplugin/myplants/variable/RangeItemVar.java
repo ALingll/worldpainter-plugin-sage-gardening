@@ -41,4 +41,18 @@ public class RangeItemVar extends RangeVar implements UiVariable{
         return desc;
     }
 
+    @Override
+    public Object copyFrom(Object variable) {
+        Range rangeVar = (Range) variable;
+        this.range.low=rangeVar.low;
+        this.range.high=rangeVar.high;
+        return this.range;
+    }
+
+    public String toString(){
+        return variable+"@"+Integer.toHexString(System.identityHashCode(this))+"{"
+                +range
+                +"}";
+    }
+
 }

@@ -1,5 +1,6 @@
 package org.cti.wpplugin.myplants;
 
+import org.cti.wpplugin.layers.GardeningLayer;
 import org.cti.wpplugin.myplants.variable.RandomVariable;
 import org.cti.wpplugin.myplants.variable.SingleChoiceVar;
 import org.cti.wpplugin.myplants.variable.UiVariable;
@@ -17,6 +18,8 @@ import java.io.Serializable;
 import java.util.*;
 
 import org.cti.wpplugin.utils.Pair;
+
+import static org.cti.wpplugin.utils.debug.DebugUtils.classStr;
 
 public class CustomPlant implements WPObject {
     private String name;
@@ -257,16 +260,25 @@ public class CustomPlant implements WPObject {
         return domain.equals(p.domain) && name.equals(p.name);
     }
 
-    @Override
-    public String toString(){
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(getFullName()+":"+"\n");
-        stringBuilder.append("global_properties:"+ globalVariables.toString()+"\n");
-        stringBuilder.append("palette:"+palette.toString());
-        return stringBuilder.toString();
-    }
+//    @Override
+//    public String toString(){
+//        StringBuilder stringBuilder = new StringBuilder();
+//        stringBuilder.append(getFullName()+":"+"\n");
+//        stringBuilder.append("global_properties:"+ globalVariables.toString()+"\n");
+//        stringBuilder.append("palette:"+palette.toString());
+//        return stringBuilder.toString();
+//    }
 
     public static CustomPlantBuilder getBuilder(){return new CustomPlantBuilder();}
+
+    public GardeningLayer.PlantSetting enable(GardeningLayer.PlantSetting setting){
+        Map<String, Object> settingVar = setting.uiProperties;
+        Map<String, Object> newSettingVar = new HashMap<>();
+        settingVar.forEach((key,value)->{
+            newSettingVar.put(key,uiVariableMap.get(key).copyFrom(value));
+        });
+        return new GardeningLayer.PlantSetting(setting.weight, newSettingVar);
+    }
 
     public static class CustomPlantBuilder{
         private String name = null;
@@ -304,5 +316,11 @@ public class CustomPlant implements WPObject {
         }
     }
 
+    @Override
+    public String toString(){
+        return classStr(this)+"{\n\t"
+                +"id="+domain+"L"+name+"\n\t"
+                +"uiVar"+uiVariableMap+"}";
+    }
 
 }

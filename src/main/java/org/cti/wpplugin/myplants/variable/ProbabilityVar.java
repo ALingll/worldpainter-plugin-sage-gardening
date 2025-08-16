@@ -57,5 +57,18 @@ public class ProbabilityVar extends AbstractIntVar implements UiVariable{
         return desc;
     }
 
+    @Override
+    public Object copyFrom(Object uiVariable) {
+        this.percentage.variable = ((Variable<Float>)uiVariable).variable;
+        return this.percentage;
+    }
+
     public Variable<Float> getVar(){return percentage;}
+
+    @Override
+    public String toString(){
+        return variable+"@"+Integer.toHexString(System.identityHashCode(this))+"{"
+                +percentage
+                +"}";
+    }
 }

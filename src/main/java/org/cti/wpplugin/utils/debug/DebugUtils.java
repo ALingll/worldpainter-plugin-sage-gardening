@@ -31,4 +31,8 @@ public class DebugUtils {
 
         System.out.println(sb.toString());
     }
+
+    public static String classStr(Object o){
+        return o.getClass().getSimpleName()+"@"+Integer.toHexString(System.identityHashCode(o));
+    }
 }

@@ -14,4 +14,5 @@ public interface UiVariable {
     public abstract ValueEditor getComponent();
     public void setDesc(String s);
     public String getDesc();
+    public Object copyFrom(Object variable);
 }
