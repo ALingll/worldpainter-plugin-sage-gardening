@@ -345,7 +345,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
 
     @Override
     public void commit() {
-        sayCalled();
+        //sayCalled();
 
         Map<CustomPlant, GardeningLayer.PlantSetting> filteredMap = tempLayer.getPlantMap().entrySet().stream()
                 .filter(entry -> entry.getValue().weight != 0) // 过滤值不为 0 的键值对
@@ -375,7 +375,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
 
     @Override
     public void reset() {
-        sayCalled();
+        //sayCalled();
         // Reset the UI to the values currently in the layer
         tempLayer.getUsedJsons().forEach((provide,value)->{
             JsonNode metaData = value.first;
@@ -413,7 +413,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
 
     @Override
     public ExporterSettings getSettings() {
-        sayCalled();
+        //sayCalled();
         if (! isCommitAvailable()) {
             throw new IllegalStateException("Settings invalid or incomplete");
         }
@@ -437,7 +437,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
     }
 
     private GardeningLayer saveSettings(GardeningLayer layer) {
-        sayCalled();
+        //sayCalled();
         if(layer==null)
             layer = createLayer();
         layer.setPaint(paintPicker.getPaint());

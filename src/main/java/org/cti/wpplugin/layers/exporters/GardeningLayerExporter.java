@@ -18,6 +18,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
+import static org.pepsoft.minecraft.Constants.MC_AIR;
 import static org.pepsoft.worldpainter.exporting.SecondPassLayerExporter.Stage.ADD_FEATURES;
 import static org.pepsoft.worldpainter.exporting.SecondPassLayerExporter.Stage.CARVE;
 import static org.pepsoft.worldpainter.layers.exporters.WPObjectExporter.renderObject;
@@ -203,33 +204,6 @@ public class GardeningLayerExporter extends AbstractLayerExporter<GardeningLayer
         return null; // Or return Fixups for creating structures that cross region borders, if that is hard to do in one go
     }
 
-    private void testInit() {
-        layer.setPlant(
-                CustomPlant.getBuilder()
-                        .setName("verdantvibes")
-                        .setDomain("lobelia")
-                        .pushBack(new PlantElement(Material.get("verdantvibes:lobelia")))
-                        .setEnableRandom(false).build(),
-                2
-        );
-        layer.setPlant(
-                CustomPlant.getBuilder()
-                        .setName("verdantvibes")
-                        .setDomain("periwinkle")
-                        .pushBack(new PlantElement(Material.get("verdantvibes:periwinkle")))
-                        .setEnableRandom(false).build(),
-                1
-        );
-        layer.setPlant(
-                CustomPlant.getBuilder()
-                        .setName("verdantvibes")
-                        .setDomain("candy_tuft")
-                        .pushBack(new PlantElement(Material.get("verdantvibes:candy_tuft")))
-                        .setEnableRandom(false).build(),
-                1
-        );
-    }
-
     // IncidentalLayerExporter
 
     /**
@@ -256,7 +230,29 @@ public class GardeningLayerExporter extends AbstractLayerExporter<GardeningLayer
         // Create a local seed to ensure the results are deterministic, yet vary by world seed and by location
         final long seed = (dimension.getSeed() << 12) ^ ((long) location.x << 8) ^ ((long) location.y << 4) ^ location.z;
         // TODO: modify the MinecraftWorld as required according to the intensity
+        final Bo2ObjectProvider objectProvider = layer.getObjectProvider(platform);
+        objectProvider.setSeed(seed);
+        incidentalRandomRef.get().setSeed(seed);
+        boolean isCheckFoundation = layer.isCheckFoundation();
+
+        int x = location.x;
+        int y = location.y;
+        int z = location.z;
+
+        CustomPlant plant = (CustomPlant) objectProvider.getObject();
+        if ((intensity >= 100) || ((intensity > 0) && (incidentalRandomRef.get().nextInt(100) < intensity))){
+            if(!minecraftWorld.getMaterialAt(x,y,z-1).veryInsubstantial || !minecraftWorld.getMaterialAt(x,y,z+1).veryInsubstantial)
+                if(plant!=null && (!isCheckFoundation || plant.isValidFoundation(minecraftWorld, x, y, z)))
+                    renderObject(minecraftWorld, dimension, platform, plant, x, y, z, false);
+        }
         return null; // Or return a Fixup for creating structures that cross region borders, if that is hard to do in
         // one go
     }
+
+    private final ThreadLocal<Random> incidentalRandomRef = new ThreadLocal<Random>() {
+        @Override
+        protected Random initialValue() {
+            return new Random();
+        }
+    };
 }

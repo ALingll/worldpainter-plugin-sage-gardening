@@ -1,0 +1,190 @@
+{
+  "metadata": {
+    "provides": ["Biomes O' Plenty"],
+    "author": "ALingll",
+    "encoder_v": "beta-1.0"
+  },
+  "Biomes O' Plenty": {
+    "Visceral Heap": {
+      "eye bulb":{
+        "data": [
+          {
+            "block":"biomesoplenty:eyebulb",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block":"blimeoplenty:eyebulb",
+            "properties": {
+              "half": "upper"
+            }
+          }
+        ]
+      },
+      "hair": {
+        "block":"biomesoplenty:hair"
+      },
+      "flesh tendons": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "biomesoplenty:flesh_tendons_strand",
+            "times": "#height"
+          },
+          {
+            "block": "biomesoplenty:flesh_tendons",
+            "properties": {
+              "age": "5"
+            }
+          }
+        ]
+      }
+    },
+    "Erupting Inferno": {
+      "brim stone cluster":{
+        "data": [
+          {
+            "block":"biomesoplenty:brimstone_cluster",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block":"blimeoplenty:brimstone_cluster",
+            "properties": {
+              "half": "upper"
+            }
+          }
+        ]
+      },
+      "brim stone fumarole":{
+        "block": "biomesoplenty:brimstone_fumarole"
+      }
+    },
+    "Withered Abyss": {
+      "black stone spines":{
+        "block": "biomesoplenty:blackstone_spines"
+      },
+      "black stone bulb":{
+        "block": "biomesoplenty:blackstone_bulb"
+      }
+    },
+    "Crystalline Chasm": {
+      "rose quartz cluster": {
+        "block": "biomesoplenty:rose_quartz_cluster"
+      },
+      "large rose quartz bud": {
+        "block": "biomesoplenty:large_rose_quartz_bud"
+      },
+      "medium rose quartz bud": {
+        "block": "biomesoplenty:medium_rose_quartz_bud"
+      },
+      "small rose quartz bud": {
+        "block": "biomesoplenty:small_rose_quartz_bud"
+      }
+    },
+    "Glowing Grotto": {
+      "glowshroom": {
+        "block": "biomesoplenty:glowshroom"
+      },
+      "glowing moss carpet": {
+        "block": "biomesoplenty:glowing_moss_carpet"
+      },
+      "glowworm silk": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "biomesoplenty:glowworm_silk_strand",
+            "times": "#height"
+          },
+          {
+            "block": "biomesoplenty:glowworm_silk_tendons",
+            "properties": {
+              "age": "5"
+            }
+          }
+        ]
+      }
+    },
+    "Spider Nest": {
+      "spider egg": {
+        "block": "biomesoplenty:spider_egg"
+      },
+      "hanging cobweb": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "biomesoplenty:hanging_cobweb_strand",
+            "times": "#height"
+          },
+          {
+            "block": "biomesoplenty:hanging_cobweb_tendons",
+            "properties": {
+              "age": "5"
+            }
+          }
+        ]
+      },
+      "webbing": {
+        "TODO": "TODO",
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "biomesoplenty:webbing",
+            "times": "#height",
+            "properties": {
+              "east": true,
+              "west": true,
+              "south": true,
+              "north": true,
+              "up": true,
+              "down": true
+            }
+          }
+        ]
+      }
+    },
+    "Uncategorized": {
+      "toadstool": {
+        "block": "biomesoplenty:toadstool"
+      }
+    }
+  }
+}
