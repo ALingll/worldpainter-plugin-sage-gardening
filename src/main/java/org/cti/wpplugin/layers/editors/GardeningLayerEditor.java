@@ -10,6 +10,7 @@ import org.cti.wpplugin.myplants.CustomPlant;
 import org.cti.wpplugin.myplants.variable.ProbabilityVar;
 import org.cti.wpplugin.myplants.variable.Variable;
 import org.cti.wpplugin.utils.Pair;
+import org.cti.wpplugin.utils.macro.StringMacroProvider;
 import org.pepsoft.worldpainter.Platform;
 import org.pepsoft.worldpainter.layers.AbstractLayerEditor;
 import org.pepsoft.worldpainter.layers.exporters.ExporterSettings;
@@ -17,6 +18,9 @@ import org.pepsoft.worldpainter.Configuration;
 import org.pepsoft.worldpainter.layers.renderers.PaintPicker;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,6 +34,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.cti.wpplugin.myplants.decoder.PlantDecoder.*;
+import static org.cti.wpplugin.utils.IconUtils.resizeIcon;
 import static org.cti.wpplugin.utils.JsonUtils.*;
 import static org.cti.wpplugin.utils.debug.DebugUtils.sayCalled;
 
@@ -62,7 +67,9 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
     private void initGUI() {
 
         tabbedPane = new JTabbedPane(JTabbedPane.LEFT, JTabbedPane.SCROLL_TAB_LAYOUT);
-        tabbedPane.setMinimumSize(new Dimension(1000,500));
+        tabbedPane.setMinimumSize(new Dimension(10000,500));
+        //tabbedPane.setMaximumSize(new Dimension(Integer.MAX_VALUE,Integer.MAX_VALUE));
+        tabbedPane.setTabPlacement(JTabbedPane.LEFT);
 
         List<FileCombo> fileCombos = new ArrayList<>();
 
@@ -137,8 +144,9 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
                 }
             }
         });
-        jComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE,50));
-        jComboBox.setMinimumSize(new Dimension(10000,50));
+        jComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE,jComboBox.getPreferredSize().height));
+        jComboBox.setMinimumSize(new Dimension(12000,jComboBox.getPreferredSize().height));
+        jComboBox.setPreferredSize(new Dimension(700,jComboBox.getPreferredSize().height));
 
         // 创建一个横向排列的面板
         JPanel inputRow = new JPanel();
@@ -180,12 +188,35 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         add(tabbedPane);
         add(inputRow);
 
+
     }
 
     private void loadJsonSettings(JsonNode jsonNode) {
         int i = 0;
         optionalGet(jsonNode,META_DATA_TAG).ifPresent(metaData->{
-            List<String> provides = makeStringList(strictGet(metaData,PROVIDES_TAG));
+            List<Provide> provides;
+            JsonNode providesObj = strictGet(metaData,PROVIDES_TAG);
+            if(providesObj.isObject()){
+                provides = new ArrayList<>();
+                providesObj.propertyStream().forEach(e->{
+                    String name = e.getKey();
+                    Provide provide = new Provide(name);
+                    provides.add(provide);
+                    JsonNode body = e.getValue();
+                    optionalGet(body,Provide.MC_VERSION_TAG).ifPresent(t->{
+                        provide.mcVersion = t.textValue();
+                    });
+                    optionalGet(body,Provide.MODS_TAG).ifPresent(t->{
+                        provide.mods.addAll(makeStringList(t));
+                    });
+                    optionalGet(body,Provide.STATE_TAG).ifPresent(t->{
+                        provide.state = StringMacroProvider.INSTANCE.expand(t.textValue());
+                    });
+                });
+            }else{
+                provides = makeStringList(providesObj).stream().map(Provide::new).toList();
+            }
+
             String encoder_v = makeString(strictGet(metaData,ENCODER_VERSION_TAG));
             if(!checkDecoderVersion(encoder_v)){
                 JOptionPane.showMessageDialog(null,
@@ -194,22 +225,23 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
                         JOptionPane.WARNING_MESSAGE);
                 return;
             }
+
             provides.forEach(provide -> {
-                JsonNode provideBody = strictGet(jsonNode,provide);
-                createTabPanel(provide,provideBody).ifPresent(panel -> {
-                    tabbedPane.addTab(provide,panel);
+                JsonNode provideBody = strictGet(jsonNode,provide.name);
+                createTabPanel(provide.name,provideBody,provide).ifPresent(panel -> {
+                    tabbedPane.addTab(provide.name,panel);
                     optionalGet(metaData,AUTHOR_TAG).ifPresent(author -> {
-                        int index = tabbedPane.indexOfTab(provide);
+                        int index = tabbedPane.indexOfTab(provide.name);
                         if (index != -1) tabbedPane.setToolTipTextAt(index, "Author:"+author.asText());
                     });
-                    tempLayer.putJsonNode(provide, metaData, provideBody);
+                    tempLayer.putJsonNode(provide.name, metaData, provideBody);
 
                 });
             });
         });
     }
 
-    private Optional<JScrollPane> createTabPanel(String title, JsonNode content) {
+    private Optional<JScrollPane> createTabPanel(String title, JsonNode content, Provide provide) {
         for (int i = 0; i < tabbedPane.getTabCount(); i++) {
             if (tabbedPane.getTitleAt(i).equals(title)) {
                 JOptionPane.showMessageDialog(null,
@@ -256,15 +288,6 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
                     tempLayer.remove(customPlant);
                     tempLayer.setPlant(customPlant,newSetting);
                 }
-
-//                WeightItem weightItem = new WeightItem(title+":"+groupName+":"+plantName,plantName);
-//                itemMap.put(weightItem.getId(), weightItem);
-//                weightItem.addWeightChangedListener(e->{
-//                    tempLayer.setPlant(weightItem.getId(), ((WeightItem)e.getSource()).getValue());
-//                    context.settingsChanged();
-//                    computeAllPercent();
-//                });
-//                weightItem.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
 
                 PlantEditor plantEditor = new PlantEditor(title+":"+groupName+":"+plantName, plantName, customPlant);
                 plantEditor.addWeightChangedListener(e->{
@@ -315,11 +338,78 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
             }
             computeAllPercent();
         });
-        panel.add(closeButton,0);
+
+        JLabel titleLabel = new JLabel(provide.name);
+        titleLabel.setFont(new Font(titleLabel.getFont().getName(), Font.BOLD, titleLabel.getFont().getSize()));
+        JPanel titleRow = new JPanel();
+        titleRow.setLayout(new BoxLayout(titleRow, BoxLayout.Y_AXIS));
+        JPanel row1 = new JPanel();
+        row1.setLayout(new BoxLayout(row1, BoxLayout.X_AXIS));
+        row1.add(titleLabel,BorderLayout.WEST);
+        row1.add(Box.createHorizontalGlue());
+        row1.add(closeButton,BorderLayout.EAST);
+        row1.setAlignmentX(LEFT_ALIGNMENT);
+        titleRow.add(row1);
+
+        if(!provide.mcVersion.isEmpty()) {
+            JPanel row2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+            JLabel versionLabel = new JLabel("Minecraft:"+provide.mcVersion);
+            row2.add(versionLabel);
+            row2.setAlignmentX(LEFT_ALIGNMENT);
+            titleRow.add(Box.createVerticalStrut(5)); // 在控件之间增加竖直间距
+            titleRow.add(row2);
+        }
+
+        if(!provide.state.isEmpty()){
+            JLabel warningLabel = new JLabel("Warning!...",resizeIcon(UIManager.getIcon("OptionPane.warningIcon"),16,16),JLabel.LEFT);
+            warningLabel.setHorizontalTextPosition(SwingConstants.LEFT);
+            warningLabel.setToolTipText("<html><div style='width:400px;'>" + provide.state + "</div></html>");
+            JPanel row3 = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+            row3.add(warningLabel);
+            row3.setAlignmentX(LEFT_ALIGNMENT);
+            titleRow.add(Box.createVerticalStrut(5)); // 在控件之间增加竖直间距
+            titleRow.add(row3);
+        }
+
+        if(!provide.mods.isEmpty()){
+            JLabel modsLabel = new JLabel("Mods Required!");
+            modsLabel.setToolTipText("These plants referred/required mods blocks which listed below:\n\t"
+                    +String.join("\n\t", provide.mods));
+            JPanel row4 = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+            row4.add(modsLabel);
+            row4.setAlignmentX(LEFT_ALIGNMENT);
+            titleRow.add(Box.createVerticalStrut(5)); // 在控件之间增加竖直间距
+            titleRow.add(row4);
+        }
+
+        // 设置边框和内外边距
+        Border outerMargin = BorderFactory.createEmptyBorder(5, 5, 5, 5);// 边框
+        Border line = BorderFactory.createLineBorder(Color.GRAY, 1, true);// 内边距（内容与边框之间的间隔）
+        Border innerPadding = BorderFactory.createEmptyBorder(5, 5, 5, 5);// 顺序：外边距 在最外层 → 边框 → 内边距
+        titleRow.setBorder(
+                BorderFactory.createCompoundBorder(
+                        outerMargin, // 外层
+                        BorderFactory.createCompoundBorder(
+                                line,          // 中间
+                                innerPadding   // 最里层
+                        )
+                )
+        );
+
+        titleRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+
+        GridBagConstraints gbc1 = new GridBagConstraints();
+        gbc1.fill = GridBagConstraints.HORIZONTAL; // 水平填充
+        gbc1.weightx = 1; // 水平方向上伸展
+        gbc1.weighty = 0; // 垂直方向上不伸展
+        gbc1.gridwidth = GridBagConstraints.REMAINDER; // 占据剩余的所有列
+        gbc1.anchor = GridBagConstraints.NORTH; // 组件顶部对齐
+        gbc1.insets = new Insets(5, 1, 1, 5); // 设置组件之间的间距
+        panel.add(titleRow, gbc1,0);
 
         // 创建带滚动条的 JScrollPane
         JScrollPane scrollPane = new JScrollPane(panel);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED); // 始终显示垂直滚动条
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         return Optional.ofNullable(scrollPane);
@@ -389,8 +479,23 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
                         JOptionPane.WARNING_MESSAGE);
                 return;
             }
+            Provide provide1 = new Provide(provide);
+            JsonNode providesObj = strictGet(metaData, PROVIDES_TAG);
+            if(providesObj.isObject()){
+                optionalGet(providesObj,provide).ifPresent(body->{
+                    optionalGet(body,Provide.MC_VERSION_TAG).ifPresent(t->{
+                        provide1.mcVersion = t.textValue();
+                    });
+                    optionalGet(body,Provide.MODS_TAG).ifPresent(t->{
+                        provide1.mods.addAll(makeStringList(t));
+                    });
+                    optionalGet(body,Provide.STATE_TAG).ifPresent(t->{
+                        provide1.state = StringMacroProvider.INSTANCE.expand(t.textValue());
+                    });
+                });
+            }
 
-            createTabPanel(provide,provideBody).ifPresent(panel -> {
+            createTabPanel(provide,provideBody, provide1).ifPresent(panel -> {
                 tabbedPane.addTab(provide,panel);
                 optionalGet(metaData,AUTHOR_TAG).ifPresent(author -> {
                     int index = tabbedPane.indexOfTab(provide);
@@ -481,6 +586,34 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         @Override
         public String toString() {
             return name;
+        }
+    }
+
+    private static class Provide {
+        public static String STATE_TAG = "state";
+        public static String MC_VERSION_TAG = "mc_ver";
+        public static String MODS_TAG = "mods";
+
+        public String name = "";
+        public String state = "";
+        public String mcVersion = "";
+        public List<String> mods = new ArrayList<>();
+        private Provide(String name){
+            this.name = name;
+        }
+
+        public Provide(String name, String state, String mcVersion, List<String> mods) {
+            this.name = name;
+            this.state = state;
+            this.mcVersion = mcVersion;
+            this.mods = mods;
+        }
+
+        public Provide(String name, String state, String mcVersion, String... mods) {
+            this.name = name;
+            this.state = state;
+            this.mcVersion = mcVersion;
+            this.mods = Arrays.asList(mods);
         }
     }
 

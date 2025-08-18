@@ -1,12 +1,17 @@
 {
   "metadata": {
-    "provides": ["High Plants"],
+    "provides": {
+      "High Plants": {
+        "state": "{warning.illegal}"
+      }
+    },
     "author": "ALingll",
     "encoder_v": "beta-1.0"
   },
   "High Plants": {
     "High Plants":{
       "high sunflower": {
+        "state": ["illegal"],
         "settings": {
           "ui_properties": {
             "height": {
@@ -34,6 +39,7 @@
         ]
       },
       "high dandelion": {
+        "state": ["illegal"],
         "settings": {
           "ui_properties": {
             "height": {
@@ -58,6 +64,7 @@
         ]
       },
       "high poppy": {
+        "state": ["illegal"],
         "settings": {
           "ui_properties": {
             "height": {
@@ -82,6 +89,7 @@
         ]
       },
       "high blue orchid": {
+        "state": ["illegal"],
         "settings": {
           "ui_properties": {
             "height": {
@@ -106,6 +114,7 @@
         ]
       },
       "high allium": {
+        "state": ["illegal"],
         "settings": {
           "ui_properties": {
             "height": {
@@ -130,6 +139,7 @@
         ]
       },
       "high azure bluet": {
+        "state": ["illegal"],
         "settings": {
           "ui_properties": {
             "height": {
@@ -154,6 +164,7 @@
         ]
       },
       "high red tulip": {
+        "state": ["illegal"],
         "settings": {
           "ui_properties": {
             "height": {
@@ -178,6 +189,7 @@
         ]
       },
       "high orange tulip": {
+        "state": ["illegal"],
         "settings": {
           "ui_properties": {
             "height": {
@@ -202,6 +214,7 @@
         ]
       },
       "high white tulip": {
+        "state": ["illegal"],
         "settings": {
           "ui_properties": {
             "height": {
@@ -226,6 +239,7 @@
         ]
       },
       "high pink tulip": {
+        "state": ["illegal"],
         "settings": {
           "ui_properties": {
             "height": {
@@ -250,6 +264,7 @@
         ]
       },
       "high oxeye daisy": {
+        "state": ["illegal"],
         "settings": {
           "ui_properties": {
             "height": {
@@ -274,6 +289,7 @@
         ]
       },
       "high cornflower": {
+        "state": ["illegal"],
         "settings": {
           "ui_properties": {
             "height": {
@@ -298,6 +314,7 @@
         ]
       },
       "high lily of the valley": {
+        "state": ["illegal"],
         "settings": {
           "ui_properties": {
             "height": {
@@ -322,6 +339,7 @@
         ]
       },
       "high torchflower": {
+        "state": ["illegal"],
         "settings": {
           "ui_properties": {
             "height": {
@@ -346,6 +364,7 @@
         ]
       },
       "high pitcher plant": {
+        "state": ["illegal"],
         "settings": {
           "ui_properties": {
             "height": {
@@ -379,6 +398,7 @@
         ]
       },
       "high lilac": {
+        "state": ["illegal"],
         "settings": {
           "ui_properties": {
             "height": {
@@ -406,6 +426,7 @@
         ]
       },
       "high rose bush": {
+        "state": ["illegal"],
         "settings": {
           "ui_properties": {
             "height": {
@@ -433,6 +454,7 @@
         ]
       },
       "high peony": {
+        "state": ["illegal"],
         "settings": {
           "ui_properties": {
             "height": {

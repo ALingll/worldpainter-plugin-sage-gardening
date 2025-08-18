@@ -11,6 +11,7 @@ import org.pepsoft.minecraft.Material;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.StreamSupport;
 
 import static org.cti.wpplugin.utils.FormatString.asPercent;
 import static org.cti.wpplugin.utils.FormatString.asRange;
@@ -34,6 +35,7 @@ public class PlantDecoder {
     public static final String UI_MIN_VALUE_TAG = "min";
     public static final String UI_DEFAULT_VALUE_TAG = "default";
     public static final String BLOCK_TAG = "block";
+    public static final String STATE_TAG = "state";
     public static final String PROPERTIES_TAG = "properties";
     public static final String TIMES_TAG = "times";
 
@@ -103,6 +105,17 @@ public class PlantDecoder {
         return null;
     }
 
+    private static CustomPlant.State loadStateByJson(JsonNode stateBody){
+        if(stateBody.isArray()){
+            CustomPlant.State result = new CustomPlant.State();
+            List<String> states = StreamSupport.stream(stateBody.spliterator(), false)
+                    .map(JsonNode::asText)
+                    .toList();
+            if(states.contains("illegal")) result.isIllegal = true;
+            return result;
+        }else throw new IllegalArgumentException("Illegal state format: "+stateBody.textValue());
+    }
+
     private static void checkElementJsonFormat(JsonNode jsonNode){
         if(!jsonNode.has(BLOCK_TAG))
             throw new IllegalArgumentException("JsonNode should have field \"block\":"+jsonNode.toString());
@@ -128,8 +141,7 @@ public class PlantDecoder {
                     CustomPlant result = new CustomPlant(name,domain,t_palette,true);
                     if(jsonNode.has(SETTINGS_TAG)){
                         JsonNode settings = jsonNode.get(SETTINGS_TAG);
-                        optionalGet(settings, GLOBAL_PROPERTIES_TAG).ifPresent(
-                                global_properties_data -> {
+                        optionalGet(settings, GLOBAL_PROPERTIES_TAG).ifPresent( global_properties_data -> {
                                     global_properties_data.fields().forEachRemaining((item)->{
                                         List<String> values = new ArrayList<>();
                                         if(item.getValue().isArray()){
@@ -139,9 +151,7 @@ public class PlantDecoder {
                                         }
                                         result.setNamedVar(item.getKey().toString(),new SingleChoiceVar(values));
                                     });
-                                }
-                        );
-                        //TODO
+                                });
                         optionalGet(settings,UI_PROPERTIES_TAG).ifPresent(ui_properties -> {
                             ui_properties.properties().forEach(item ->{
                                 String varName = item.getKey();
@@ -203,6 +213,11 @@ public class PlantDecoder {
                     else {
                         result.addElement(loadPlantElementByJson(data, result));
                     }
+                    AtomicReference<CustomPlant.State> state = new AtomicReference<>(new CustomPlant.State());
+                    optionalGet(jsonNode,STATE_TAG).ifPresent(s->{
+                        state.set(loadStateByJson(s));
+                    });
+                    result.setState(state.get());
                     return result.setFoundations(foundations);
                 }else {
                     return new CustomPlant(name,domain,loadPlantElementByJson(jsonNode,null)).setFoundations(foundations);

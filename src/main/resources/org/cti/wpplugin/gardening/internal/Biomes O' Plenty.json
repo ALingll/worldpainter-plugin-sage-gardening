@@ -1,6 +1,11 @@
 {
   "metadata": {
-    "provides": ["Biomes O' Plenty"],
+    "provides": {
+      "Biomes O' Plenty": {
+        "state": "{warning.illegal}",
+        "mods": ["Biomes O' Plenty 18.2.0.53"]
+      }
+    },
     "author": "ALingll",
     "encoder_v": "beta-1.0"
   },
@@ -15,7 +20,7 @@
             }
           },
           {
-            "block":"blimeoplenty:eyebulb",
+            "block":"biomesoplenty:eyebulb",
             "properties": {
               "half": "upper"
             }
@@ -60,7 +65,7 @@
             }
           },
           {
-            "block":"blimeoplenty:brimstone_cluster",
+            "block":"biomesoplenty:brimstone_cluster",
             "properties": {
               "half": "upper"
             }

@@ -4,6 +4,7 @@ import org.cti.wpplugin.layers.GardeningLayer;
 import org.cti.wpplugin.myplants.CustomPlant;
 import org.cti.wpplugin.myplants.variable.UiVariable;
 import org.cti.wpplugin.utils.Pair;
+import org.cti.wpplugin.utils.macro.StringMacroProvider;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.cti.wpplugin.utils.IconUtils.resizeIcon;
 
 /**
  * @author: ALingll
@@ -69,6 +72,14 @@ public class PlantEditor extends ValueEditor<CustomPlant> {
             iconLabel.setPreferredSize(new Dimension(24, 24)); // 占位大小
         }
 
+        JLabel warningLabel;
+        if (plant.getState().isIllegal) {
+            warningLabel = new JLabel(resizeIcon(UIManager.getIcon("OptionPane.warningIcon"),20,20));
+            warningLabel.setToolTipText("<html><div style='width:400px;'>" + StringMacroProvider.INSTANCE.get("warning.illegal") + "</div></html>");
+        } else {
+            warningLabel = new JLabel();
+            warningLabel.setPreferredSize(new Dimension(20, 20)); // 占位大小
+        }
         // 第一排布局
         JPanel leftPart = new JPanel();
         leftPart.setLayout(new BoxLayout(leftPart, BoxLayout.X_AXIS));
@@ -77,6 +88,8 @@ public class PlantEditor extends ValueEditor<CustomPlant> {
         leftPart.add(iconLabel);
         leftPart.add(Box.createHorizontalStrut(5));
         leftPart.add(weightItem);
+        leftPart.add(Box.createHorizontalStrut(5));
+        leftPart.add(warningLabel);
 
         firstRow.add(leftPart, BorderLayout.WEST);
         firstRow.setAlignmentX(LEFT_ALIGNMENT);

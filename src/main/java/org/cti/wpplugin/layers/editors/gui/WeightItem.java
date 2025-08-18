@@ -17,7 +17,7 @@ public class WeightItem extends JPanel {
         this.id = id;
         setOpaque(false); // 透明背景，防止影响布局
 
-        nameLabel = new JLabel(padRight(labelText,20));
+        nameLabel = new JLabel(padRight(labelText,25));
         spinner = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
         numberLabel = new JLabel("0.00 %");
         numberLabel.setPreferredSize(new Dimension(80, 25));

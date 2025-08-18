@@ -1,6 +1,10 @@
 {
   "metadata": {
-    "provides": ["verdantvibes"],
+    "provides": {
+      "verdantvibes": {
+        "mods": ["Verdant Vibes 1.0.3"]
+      }
+    },
     "author": "ALingll",
     "encoder_v": "beta-1.0"
   },

@@ -34,6 +34,15 @@ public class CustomPlant implements WPObject {
     private boolean enableRandom = true;
     private Random random = null;
     private int[][][] blockSpace;
+    private State state = new State();
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
 
     public CustomPlant(String name, String domain, List<PlantElement> palette, boolean enableRandom) {
         this.name = name;
@@ -314,6 +323,10 @@ public class CustomPlant implements WPObject {
         public CustomPlant build(){
             return new CustomPlant(name,domain,palette, enableRandom);
         }
+    }
+
+    public static class State{
+        public Boolean isIllegal = false;
     }
 
     @Override
