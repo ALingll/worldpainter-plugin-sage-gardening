@@ -52,6 +52,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
     private JTextField textField1 = new JTextField(10); // 设置列宽
     private PaintPicker paintPicker = new PaintPicker();
     private JSpinner densityItem = new JSpinner(new SpinnerNumberModel(100, 0, 100, 1));
+    private JComboBox<GardeningLayer.FOUNDATION> foundationjComboBox = new JComboBox<>(GardeningLayer.FOUNDATION.values());
 
     public GardeningLayerEditor(){
         initGUI();
@@ -165,12 +166,33 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
             context.settingsChanged();
         });
 
+        JLabel label5 = new JLabel("Foundation:");
+        foundationjComboBox.setSelectedItem(GardeningLayer.FOUNDATION.STRICTLY);
+        foundationjComboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(
+                    JList<?> list, Object value, int index,
+                    boolean isSelected, boolean cellHasFocus) {
+                Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof GardeningLayer.FOUNDATION policy) {
+                    setText(policy.toString());
+                    setToolTipText(policy.description);
+                }
+                return c;
+            }
+        });
+        foundationjComboBox.addActionListener(e->{
+            GardeningLayer.FOUNDATION foundation = (GardeningLayer.FOUNDATION) foundationjComboBox.getSelectedItem();
+            tempLayer.setCheckFoundation(foundation);
+            context.settingsChanged();
+        });
 
         // 给两个标签一点右边距，使间距更好看
         label1.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
         label2.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 5));
         label3.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 5));
         label4.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 5));
+        label5.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 5));
         // 添加组件到横向面板
         inputRow.add(label1);
         inputRow.add(textField1);
@@ -179,6 +201,8 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         inputRow.add(label3);
         inputRow.add(densityItem);
         inputRow.add(label4);
+        inputRow.add(label5);
+        inputRow.add(foundationjComboBox);
         // 设置面板最大宽度撑满
         inputRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
@@ -514,6 +538,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         paintPicker.setPaint(layer.getPaint());
         paintPicker.setOpacity(layer.getOpacity());
         densityItem.setValue(layer.getDensity());
+        foundationjComboBox.setSelectedItem(layer.getCheckFoundation());
     }
 
     @Override

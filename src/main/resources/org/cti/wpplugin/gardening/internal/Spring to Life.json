@@ -38,6 +38,7 @@
         "block":"minecraft:tall_dry_grass"
       },
       "cactus": {
+        "foundations": ["minecraft:sand"],
         "settings": {
           "ui_properties": {
             "height": {

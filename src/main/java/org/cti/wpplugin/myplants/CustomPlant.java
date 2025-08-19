@@ -184,6 +184,8 @@ public class CustomPlant implements WPObject {
     }
 
     public boolean isValidFoundation(MinecraftWorld world, int x, int y, int height){
+        if(foundations.isEmpty())
+            return true;
         Material material = world.getMaterialAt(x,y,height);
         for(Material m:foundations){
             if(material.isNamed(m.name)) return true;

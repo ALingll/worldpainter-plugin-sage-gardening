@@ -19,9 +19,13 @@ import java.util.*;
 import java.util.List;
 
 import static org.pepsoft.minecraft.Constants.MC_AIR;
+import static org.pepsoft.worldpainter.Platform.Capability.NAME_BASED;
+import static org.pepsoft.worldpainter.Platform.Capability.WATERLOGGED_LEAVES;
 import static org.pepsoft.worldpainter.exporting.SecondPassLayerExporter.Stage.ADD_FEATURES;
 import static org.pepsoft.worldpainter.exporting.SecondPassLayerExporter.Stage.CARVE;
 import static org.pepsoft.worldpainter.layers.exporters.WPObjectExporter.renderObject;
+import static org.pepsoft.worldpainter.objects.WPObject.*;
+import static org.pepsoft.worldpainter.util.WPObjectUtils.placeBlock;
 
 /**
  * The exporter is responsible for applying the layer to the map when the world is being Exported by WorldPainter.
@@ -186,17 +190,42 @@ public class GardeningLayerExporter extends AbstractLayerExporter<GardeningLayer
         //testInit();
         final Bo2ObjectProvider objectProvider = layer.getObjectProvider(platform);
         objectProvider.setSeed(seed);
-        boolean isCheckFoundation = layer.isCheckFoundation();
+        GardeningLayer.FOUNDATION checkFoundation = layer.getCheckFoundation();
         for (int x = area.x; x < (area.x + area.width); x++) {
             for (int y = area.y; y < (area.y + area.height); y++) {
                 if(dimension.getBitLayerValueAt(layer,x,y)){
                     int height = dimension.getIntHeightAt(x,y);
                     CustomPlant plant = (CustomPlant) objectProvider.getObject();
-                    if(plant!=null &&
-                            (!isCheckFoundation || plant.isValidFoundation(minecraftWorld,x,y,height))
-                    )
-                        renderObject(minecraftWorld, dimension, platform, plant, x, y, height + 1, false);
-                    //minecraftWorld.setMaterialAt(x,y, dimension.getIntHeightAt(x,y)+1,Material.get("verdantvibes:lobelia"));
+//                    if(plant!=null &&
+//                            (! (checkFoundation==GardeningLayer.FOUNDATION.IGNORE) || plant.isValidFoundation(minecraftWorld,x,y,height))
+//                    )
+//                        renderObject(minecraftWorld, dimension, platform, plant, x, y, height + 1, false);
+                    if(plant!=null){
+                        switch (checkFoundation){
+                            case IGNORE: default:{
+                                renderObject(minecraftWorld, dimension, platform, plant, x, y, height + 1, false);
+                                break;
+                            }
+                            case REPLACE:{
+                                if(!plant.isValidFoundation(minecraftWorld,x,y,height)) {
+                                    final int leafDecayMode = plant.getAttribute(ATTRIBUTE_LEAF_DECAY_MODE);
+                                    final boolean waterLoggedLeaves = platform.capabilities.contains(WATERLOGGED_LEAVES);
+                                    final boolean connectBlocks = plant.getAttribute(ATTRIBUTE_CONNECT_BLOCKS) && platform.capabilities.contains(NAME_BASED);
+                                    final boolean manageWaterlogged = plant.getAttribute(ATTRIBUTE_MANAGE_WATERLOGGED) && platform.capabilities.contains(NAME_BASED);
+                                    placeBlock(minecraftWorld, x, y, height, plant.getPreferFoundation(),leafDecayMode,waterLoggedLeaves,connectBlocks,manageWaterlogged);
+                                    renderObject(minecraftWorld, dimension, platform, plant, x, y, height + 1, false);
+                                }else {
+                                    renderObject(minecraftWorld, dimension, platform, plant, x, y, height + 1, false);
+                                }
+                                break;
+                            }
+                            case STRICTLY:{
+                                if(plant.isValidFoundation(minecraftWorld,x,y,height))
+                                    renderObject(minecraftWorld, dimension, platform, plant, x, y, height + 1, false);
+                                break;
+                            }
+                        }
+                    }
                 }
                 // TODO: modify the MinecraftWorld as required according to the layer value
             }
@@ -233,7 +262,6 @@ public class GardeningLayerExporter extends AbstractLayerExporter<GardeningLayer
         final Bo2ObjectProvider objectProvider = layer.getObjectProvider(platform);
         objectProvider.setSeed(seed);
         incidentalRandomRef.get().setSeed(seed);
-        boolean isCheckFoundation = layer.isCheckFoundation();
 
         int x = location.x;
         int y = location.y;
@@ -242,8 +270,33 @@ public class GardeningLayerExporter extends AbstractLayerExporter<GardeningLayer
         CustomPlant plant = (CustomPlant) objectProvider.getObject();
         if ((intensity >= 100) || ((intensity > 0) && (incidentalRandomRef.get().nextInt(100) < intensity))){
             if(!minecraftWorld.getMaterialAt(x,y,z-1).veryInsubstantial || !minecraftWorld.getMaterialAt(x,y,z+1).veryInsubstantial)
-                if(plant!=null && (!isCheckFoundation || plant.isValidFoundation(minecraftWorld, x, y, z)))
-                    renderObject(minecraftWorld, dimension, platform, plant, x, y, z, false);
+                if(plant!=null){
+                    GardeningLayer.FOUNDATION checkFoundation = layer.getCheckFoundation();
+                    switch (checkFoundation){
+                        case IGNORE: default:{
+                            renderObject(minecraftWorld, dimension, platform, plant, x, y, z, false);
+                            break;
+                        }
+                        case REPLACE:{
+                            if(!plant.isValidFoundation(minecraftWorld,x,y,z-1)) {
+                                final int leafDecayMode = plant.getAttribute(ATTRIBUTE_LEAF_DECAY_MODE);
+                                final boolean waterLoggedLeaves = platform.capabilities.contains(WATERLOGGED_LEAVES);
+                                final boolean connectBlocks = plant.getAttribute(ATTRIBUTE_CONNECT_BLOCKS) && platform.capabilities.contains(NAME_BASED);
+                                final boolean manageWaterlogged = plant.getAttribute(ATTRIBUTE_MANAGE_WATERLOGGED) && platform.capabilities.contains(NAME_BASED);
+                                placeBlock(minecraftWorld, x, y, z-1, plant.getPreferFoundation(),leafDecayMode,waterLoggedLeaves,connectBlocks,manageWaterlogged);
+                                renderObject(minecraftWorld, dimension, platform, plant, x, y, z, false);
+                            }else {
+                                renderObject(minecraftWorld, dimension, platform, plant, x, y, z, false);
+                            }
+                            break;
+                        }
+                        case STRICTLY:{
+                            if(plant.isValidFoundation(minecraftWorld,x,y,z-1))
+                                renderObject(minecraftWorld, dimension, platform, plant, x, y, z, false);
+                            break;
+                        }
+                    }
+                }
         }
         return null; // Or return a Fixup for creating structures that cross region borders, if that is hard to do in
         // one go

@@ -146,14 +146,13 @@ public class GardeningLayer extends CustomLayer {
     private Map<CustomPlant, PlantSetting> plantMap = new HashMap<>() ;
     private Map<String, Pair<JsonNode,JsonNode>> usedJsons = new HashMap<>();
 
-    public boolean isCheckFoundation() {
-        return checkFoundation;
+    public FOUNDATION getCheckFoundation() { return checkFoundation;
     }
-    public void setCheckFoundation(boolean checkFoundation) {
+    public void setCheckFoundation(FOUNDATION checkFoundation) {
         this.checkFoundation = checkFoundation;
     }
 
-    private boolean checkFoundation = false;
+    private FOUNDATION checkFoundation = FOUNDATION.STRICTLY;
     private int density = 100;
 
     public void setDensity(int density){this.density=density;}
@@ -304,6 +303,7 @@ public class GardeningLayer extends CustomLayer {
         this.checkFoundation = layer.checkFoundation;
         this.plantMap = new HashMap<>();
         this.plantMap.putAll(layer.plantMap);
+        this.checkFoundation = layer.getCheckFoundation();
 //        Map<CustomPlant, GardeningLayer.PlantSetting> oldMap = layer.plantMap;
 //        this.plantMap.forEach((key,value)->{
 //            if(!oldMap.containsKey(key))
@@ -352,22 +352,6 @@ public class GardeningLayer extends CustomLayer {
                 +"}";
     }
 
-    public enum FoundationHandle{
-        IGNORE("Plants will ignore the foundation type and can be placed anywhere"),
-        CHECK_FOUNDATION("Plants will not be placed on unsupported foundation types"),
-        ADD_FOUNDATION("The plant can be placed anywhere, and the block at its root will be replaced with the preferred Foundation");
-
-        private final String description;
-
-        FoundationHandle(String description) {
-            this.description = description;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-    }
-
     public static class PlantSetting implements Serializable {
         public int weight = 0;
         public Map<String, Object> uiProperties = new HashMap<>();
@@ -380,6 +364,23 @@ public class GardeningLayer extends CustomLayer {
         }
         @Override
         public String toString(){return classStr(this)+String.format("{w=%d,p=%s}",weight,uiProperties);}
+    }
+
+    public static enum FOUNDATION{
+        STRICTLY("Strictly","Plants will not be placed on unsupported foundation types"),
+        IGNORE("Uncheck","Plants will ignore the foundation type and can be placed anywhere"),
+        REPLACE("Check and Replace","The plant can be placed anywhere, and the block at its root will be replaced with the preferred Foundation");
+
+        public final String description;
+        public final String name;
+
+        FOUNDATION(String name, String description) {
+            this.name = name;
+            this.description = description;
+        }
+
+        @Override
+        public String toString(){return name;}
 
     }
 }
