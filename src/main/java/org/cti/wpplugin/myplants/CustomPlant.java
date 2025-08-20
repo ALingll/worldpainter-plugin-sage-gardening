@@ -36,6 +36,26 @@ public class CustomPlant implements WPObject {
     private int[][][] blockSpace;
     private State state = new State();
 
+    public PlantHabit getHabit() {
+        return habit;
+    }
+
+    public void setHabit(PlantHabit habit) {
+        this.habit = habit;
+    }
+
+    private PlantHabit habit = PlantHabit.TERRESTRIAL;
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    private String icon = "";
+
     public State getState() {
         return state;
     }
@@ -327,7 +347,7 @@ public class CustomPlant implements WPObject {
         }
     }
 
-    public static class State{
+    public static class State implements Serializable{
         public Boolean isIllegal = false;
     }
 

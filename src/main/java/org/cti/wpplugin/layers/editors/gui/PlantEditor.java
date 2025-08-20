@@ -1,6 +1,7 @@
 package org.cti.wpplugin.layers.editors.gui;
 
 import org.cti.wpplugin.layers.GardeningLayer;
+import org.cti.wpplugin.minecraft.IconLoader;
 import org.cti.wpplugin.myplants.CustomPlant;
 import org.cti.wpplugin.myplants.variable.UiVariable;
 import org.cti.wpplugin.utils.Pair;
@@ -64,7 +65,7 @@ public class PlantEditor extends ValueEditor<CustomPlant> {
 
         // 图标（如果 icon 为 null，则放空白占位）
         //TODO
-        Icon icon=null;
+        Icon icon= IconLoader.getInstance().getIcon(plant.getIcon());
         if (icon != null) {
             iconLabel = new JLabel(icon);
         } else {

@@ -1,4 +1,4 @@
-package org.cti.wpplugin.utils;
+package org.cti.wpplugin.minecraft;
 
 import org.pepsoft.minecraft.Material;
 

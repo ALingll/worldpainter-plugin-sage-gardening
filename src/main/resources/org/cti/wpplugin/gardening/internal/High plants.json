@@ -11,6 +11,7 @@
   "High Plants": {
     "High Plants":{
       "high sunflower": {
+        "foundations": ["minecraft:grass_block","#dirt","minecraft:farmland"],
         "state": ["illegal"],
         "settings": {
           "ui_properties": {
@@ -39,6 +40,7 @@
         ]
       },
       "high dandelion": {
+        "foundations": ["minecraft:grass_block","#dirt","minecraft:farmland"],
         "state": ["illegal"],
         "settings": {
           "ui_properties": {
@@ -64,6 +66,7 @@
         ]
       },
       "high poppy": {
+        "foundations": ["minecraft:grass_block","#dirt","minecraft:farmland"],
         "state": ["illegal"],
         "settings": {
           "ui_properties": {
@@ -89,6 +92,7 @@
         ]
       },
       "high blue orchid": {
+        "foundations": ["minecraft:grass_block","#dirt","minecraft:farmland"],
         "state": ["illegal"],
         "settings": {
           "ui_properties": {
@@ -114,6 +118,7 @@
         ]
       },
       "high allium": {
+        "foundations": ["minecraft:grass_block","#dirt","minecraft:farmland"],
         "state": ["illegal"],
         "settings": {
           "ui_properties": {
@@ -139,6 +144,7 @@
         ]
       },
       "high azure bluet": {
+        "foundations": ["minecraft:grass_block","#dirt","minecraft:farmland"],
         "state": ["illegal"],
         "settings": {
           "ui_properties": {
@@ -164,6 +170,7 @@
         ]
       },
       "high red tulip": {
+        "foundations": ["minecraft:grass_block","#dirt","minecraft:farmland"],
         "state": ["illegal"],
         "settings": {
           "ui_properties": {
@@ -189,6 +196,7 @@
         ]
       },
       "high orange tulip": {
+        "foundations": ["minecraft:grass_block","#dirt","minecraft:farmland"],
         "state": ["illegal"],
         "settings": {
           "ui_properties": {
@@ -214,6 +222,7 @@
         ]
       },
       "high white tulip": {
+        "foundations": ["minecraft:grass_block","#dirt","minecraft:farmland"],
         "state": ["illegal"],
         "settings": {
           "ui_properties": {
@@ -239,6 +248,7 @@
         ]
       },
       "high pink tulip": {
+        "foundations": ["minecraft:grass_block","#dirt","minecraft:farmland"],
         "state": ["illegal"],
         "settings": {
           "ui_properties": {
@@ -264,6 +274,7 @@
         ]
       },
       "high oxeye daisy": {
+        "foundations": ["minecraft:grass_block","#dirt","minecraft:farmland"],
         "state": ["illegal"],
         "settings": {
           "ui_properties": {
@@ -289,6 +300,7 @@
         ]
       },
       "high cornflower": {
+        "foundations": ["minecraft:grass_block","#dirt","minecraft:farmland"],
         "state": ["illegal"],
         "settings": {
           "ui_properties": {
@@ -314,6 +326,7 @@
         ]
       },
       "high lily of the valley": {
+        "foundations": ["minecraft:grass_block","#dirt","minecraft:farmland"],
         "state": ["illegal"],
         "settings": {
           "ui_properties": {
@@ -339,6 +352,7 @@
         ]
       },
       "high torchflower": {
+        "foundations": ["minecraft:grass_block","#dirt","minecraft:farmland"],
         "state": ["illegal"],
         "settings": {
           "ui_properties": {
@@ -364,6 +378,7 @@
         ]
       },
       "high pitcher plant": {
+        "foundations": ["minecraft:grass_block","#dirt","minecraft:farmland"],
         "state": ["illegal"],
         "settings": {
           "ui_properties": {
@@ -398,6 +413,7 @@
         ]
       },
       "high lilac": {
+        "foundations": ["minecraft:grass_block","#dirt","minecraft:farmland"],
         "state": ["illegal"],
         "settings": {
           "ui_properties": {
@@ -426,6 +442,7 @@
         ]
       },
       "high rose bush": {
+        "foundations": ["minecraft:grass_block","#dirt","minecraft:farmland"],
         "state": ["illegal"],
         "settings": {
           "ui_properties": {
@@ -454,6 +471,7 @@
         ]
       },
       "high peony": {
+        "foundations": ["minecraft:grass_block","#dirt","minecraft:farmland"],
         "state": ["illegal"],
         "settings": {
           "ui_properties": {

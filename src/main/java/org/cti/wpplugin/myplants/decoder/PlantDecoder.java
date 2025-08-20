@@ -3,8 +3,9 @@ package org.cti.wpplugin.myplants.decoder;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.cti.wpplugin.myplants.CustomPlant;
 import org.cti.wpplugin.myplants.PlantElement;
+import org.cti.wpplugin.myplants.PlantHabit;
 import org.cti.wpplugin.myplants.variable.*;
-import org.cti.wpplugin.utils.BlockTags;
+import org.cti.wpplugin.minecraft.BlockTags;
 import org.cti.wpplugin.utils.Pair;
 import org.cti.wpplugin.utils.Range;
 import org.pepsoft.minecraft.Material;
@@ -27,6 +28,8 @@ public class PlantDecoder {
     public static final String PROVIDES_TAG = "provides";
     public static final String AUTHOR_TAG = "author";
     public static final String DATA_TAG = "data";
+    public static final String ICON_TAG = "icon";
+    public static final String HABIT_TAG = "habit";
     public static final String SETTINGS_TAG = "settings";
     public static final String GLOBAL_PROPERTIES_TAG = "global_properties";
     public static final String UI_PROPERTIES_TAG = "ui_properties";
@@ -136,6 +139,14 @@ public class PlantDecoder {
                 return result;
             }else if(jsonNode.isObject()){
                 Pair<Set<Material>, Material> foundations = loadFoundationsByJson(jsonNode);
+                AtomicReference<String> icon = new AtomicReference<>();
+                AtomicReference<PlantHabit> habit = new AtomicReference<>(PlantHabit.TERRESTRIAL);
+                optionalGet(jsonNode,ICON_TAG).ifPresent(n->{
+                    icon.set(n.textValue());
+                });
+                optionalGet(jsonNode, HABIT_TAG).ifPresent(n->{
+                    habit.set(PlantHabit.of(n.textValue()));
+                });
                 if(jsonNode.has(DATA_TAG)){
                     ArrayList<PlantElement> t_palette = new ArrayList<>();
                     CustomPlant result = new CustomPlant(name,domain,t_palette,true);
@@ -218,9 +229,14 @@ public class PlantDecoder {
                         state.set(loadStateByJson(s));
                     });
                     result.setState(state.get());
+                    result.setIcon(icon.get());
+                    result.setHabit(habit.get());
                     return result.setFoundations(foundations);
                 }else {
-                    return new CustomPlant(name,domain,loadPlantElementByJson(jsonNode,null)).setFoundations(foundations);
+                    CustomPlant customPlant = new CustomPlant(name,domain,loadPlantElementByJson(jsonNode,null)).setFoundations(foundations);
+                    customPlant.setIcon(icon.get());
+                    customPlant.setHabit(habit.get());
+                    return customPlant;
                 }
             }else {
                 throw new IllegalArgumentException("Unsupported json format as CustomPlant:"+jsonNode.toPrettyString());

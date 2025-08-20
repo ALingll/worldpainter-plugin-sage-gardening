@@ -106,6 +106,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         }
         try (Stream<Path> paths = Files.walk(gardeningLayerDir.toPath())) {
             paths.filter(Files::isRegularFile)
+                    .filter(path -> !path.getFileName().toString().equals("settings.json"))
                     .forEach(item -> fileCombos.add(new FileCombo(item.toString(), FileCombo.Scope.USER_DEFINED)));
         } catch (IOException e) {
             e.printStackTrace();

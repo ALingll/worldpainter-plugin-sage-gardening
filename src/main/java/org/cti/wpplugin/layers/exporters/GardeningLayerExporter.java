@@ -3,6 +3,7 @@ package org.cti.wpplugin.layers.exporters;
 import org.cti.wpplugin.myplants.CustomPlant;
 import org.cti.wpplugin.myplants.PlantElement;
 import org.cti.wpplugin.layers.GardeningLayer;
+import org.cti.wpplugin.myplants.PlantHabit;
 import org.pepsoft.minecraft.Chunk;
 import org.pepsoft.minecraft.Material;
 import org.pepsoft.worldpainter.Dimension;
@@ -203,25 +204,42 @@ public class GardeningLayerExporter extends AbstractLayerExporter<GardeningLayer
                     if(plant!=null){
                         switch (checkFoundation){
                             case IGNORE: default:{
-                                renderObject(minecraftWorld, dimension, platform, plant, x, y, height + 1, false);
+                                int finalX = x;
+                                int finalY = y;
+                                plant.getHabit().isValidHabit(dimension,x,y).ifPresent(h->{
+                                    renderObject(minecraftWorld, dimension, platform, plant, finalX, finalY, h, false);
+                                });
                                 break;
                             }
                             case REPLACE:{
                                 if(!plant.isValidFoundation(minecraftWorld,x,y,height)) {
-                                    final int leafDecayMode = plant.getAttribute(ATTRIBUTE_LEAF_DECAY_MODE);
-                                    final boolean waterLoggedLeaves = platform.capabilities.contains(WATERLOGGED_LEAVES);
-                                    final boolean connectBlocks = plant.getAttribute(ATTRIBUTE_CONNECT_BLOCKS) && platform.capabilities.contains(NAME_BASED);
-                                    final boolean manageWaterlogged = plant.getAttribute(ATTRIBUTE_MANAGE_WATERLOGGED) && platform.capabilities.contains(NAME_BASED);
-                                    placeBlock(minecraftWorld, x, y, height, plant.getPreferFoundation(),leafDecayMode,waterLoggedLeaves,connectBlocks,manageWaterlogged);
-                                    renderObject(minecraftWorld, dimension, platform, plant, x, y, height + 1, false);
+                                    int finalX1 = x;
+                                    int finalY1 = y;
+                                    plant.getHabit().isValidHabit(dimension,x,y).ifPresent(h->{
+                                        final int leafDecayMode = plant.getAttribute(ATTRIBUTE_LEAF_DECAY_MODE);
+                                        final boolean waterLoggedLeaves = platform.capabilities.contains(WATERLOGGED_LEAVES);
+                                        final boolean connectBlocks = plant.getAttribute(ATTRIBUTE_CONNECT_BLOCKS) && platform.capabilities.contains(NAME_BASED);
+                                        final boolean manageWaterlogged = plant.getAttribute(ATTRIBUTE_MANAGE_WATERLOGGED) && platform.capabilities.contains(NAME_BASED);
+                                        placeBlock(minecraftWorld, finalX1, finalY1, height, plant.getPreferFoundation(),leafDecayMode,waterLoggedLeaves,connectBlocks,manageWaterlogged);
+                                        renderObject(minecraftWorld, dimension, platform, plant, finalX1, finalY1, h, false);
+                                    });
                                 }else {
-                                    renderObject(minecraftWorld, dimension, platform, plant, x, y, height + 1, false);
+                                    int finalX = x;
+                                    int finalY = y;
+                                    plant.getHabit().isValidHabit(dimension,x,y).ifPresent(h->{
+                                        renderObject(minecraftWorld, dimension, platform, plant, finalX, finalY, h, false);
+                                    });
                                 }
                                 break;
                             }
                             case STRICTLY:{
-                                if(plant.isValidFoundation(minecraftWorld,x,y,height))
-                                    renderObject(minecraftWorld, dimension, platform, plant, x, y, height + 1, false);
+                                if(plant.isValidFoundation(minecraftWorld,x,y,height)) {
+                                    int finalX = x;
+                                    int finalY = y;
+                                    plant.getHabit().isValidHabit(dimension,x,y).ifPresent(h->{
+                                        renderObject(minecraftWorld, dimension, platform, plant, finalX, finalY, h, false);
+                                    });
+                                }
                                 break;
                             }
                         }
@@ -274,25 +292,37 @@ public class GardeningLayerExporter extends AbstractLayerExporter<GardeningLayer
                     GardeningLayer.FOUNDATION checkFoundation = layer.getCheckFoundation();
                     switch (checkFoundation){
                         case IGNORE: default:{
-                            renderObject(minecraftWorld, dimension, platform, plant, x, y, z, false);
+                            plant.getHabit().isValidHabit(minecraftWorld,x,y,z).ifPresent(h->{
+                                renderObject(minecraftWorld, dimension, platform, plant, x, y, h, false);
+                            });
                             break;
                         }
                         case REPLACE:{
                             if(!plant.isValidFoundation(minecraftWorld,x,y,z-1)) {
-                                final int leafDecayMode = plant.getAttribute(ATTRIBUTE_LEAF_DECAY_MODE);
-                                final boolean waterLoggedLeaves = platform.capabilities.contains(WATERLOGGED_LEAVES);
-                                final boolean connectBlocks = plant.getAttribute(ATTRIBUTE_CONNECT_BLOCKS) && platform.capabilities.contains(NAME_BASED);
-                                final boolean manageWaterlogged = plant.getAttribute(ATTRIBUTE_MANAGE_WATERLOGGED) && platform.capabilities.contains(NAME_BASED);
-                                placeBlock(minecraftWorld, x, y, z-1, plant.getPreferFoundation(),leafDecayMode,waterLoggedLeaves,connectBlocks,manageWaterlogged);
-                                renderObject(minecraftWorld, dimension, platform, plant, x, y, z, false);
+                                plant.getHabit().isValidHabit(minecraftWorld,x,y,z).ifPresent(h->{
+                                    final int leafDecayMode = plant.getAttribute(ATTRIBUTE_LEAF_DECAY_MODE);
+                                    final boolean waterLoggedLeaves = platform.capabilities.contains(WATERLOGGED_LEAVES);
+                                    final boolean connectBlocks = plant.getAttribute(ATTRIBUTE_CONNECT_BLOCKS) && platform.capabilities.contains(NAME_BASED);
+                                    final boolean manageWaterlogged = plant.getAttribute(ATTRIBUTE_MANAGE_WATERLOGGED) && platform.capabilities.contains(NAME_BASED);
+                                    if(plant.getHabit()== PlantHabit.HANGING){
+                                        placeBlock(minecraftWorld, x, y, h+1, plant.getPreferFoundation(),leafDecayMode,waterLoggedLeaves,connectBlocks,manageWaterlogged);
+                                    }else {
+                                        placeBlock(minecraftWorld, x, y, h-1, plant.getPreferFoundation(),leafDecayMode,waterLoggedLeaves,connectBlocks,manageWaterlogged);
+                                    }
+                                    renderObject(minecraftWorld, dimension, platform, plant, x, y, h, false);
+                                });
                             }else {
-                                renderObject(minecraftWorld, dimension, platform, plant, x, y, z, false);
+                                plant.getHabit().isValidHabit(minecraftWorld,x,y,z).ifPresent(h->{
+                                    renderObject(minecraftWorld, dimension, platform, plant, x, y, h, false);
+                                });
                             }
                             break;
                         }
                         case STRICTLY:{
                             if(plant.isValidFoundation(minecraftWorld,x,y,z-1))
-                                renderObject(minecraftWorld, dimension, platform, plant, x, y, z, false);
+                                plant.getHabit().isValidHabit(minecraftWorld,x,y,z).ifPresent(h->{
+                                    renderObject(minecraftWorld, dimension, platform, plant, x, y, h, false);
+                                });
                             break;
                         }
                     }

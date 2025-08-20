@@ -366,7 +366,7 @@ public class GardeningLayer extends CustomLayer {
         public String toString(){return classStr(this)+String.format("{w=%d,p=%s}",weight,uiProperties);}
     }
 
-    public static enum FOUNDATION{
+    public static enum FOUNDATION implements Serializable{
         STRICTLY("Strictly","Plants will not be placed on unsupported foundation types"),
         IGNORE("Uncheck","Plants will ignore the foundation type and can be placed anywhere"),
         REPLACE("Check and Replace","The plant can be placed anywhere, and the block at its root will be replaced with the preferred Foundation");
