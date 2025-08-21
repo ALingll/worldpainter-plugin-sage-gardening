@@ -304,11 +304,7 @@ public class GardeningLayerExporter extends AbstractLayerExporter<GardeningLayer
                                     final boolean waterLoggedLeaves = platform.capabilities.contains(WATERLOGGED_LEAVES);
                                     final boolean connectBlocks = plant.getAttribute(ATTRIBUTE_CONNECT_BLOCKS) && platform.capabilities.contains(NAME_BASED);
                                     final boolean manageWaterlogged = plant.getAttribute(ATTRIBUTE_MANAGE_WATERLOGGED) && platform.capabilities.contains(NAME_BASED);
-                                    if(plant.getHabit()== PlantHabit.HANGING){
-                                        placeBlock(minecraftWorld, x, y, h+1, plant.getPreferFoundation(),leafDecayMode,waterLoggedLeaves,connectBlocks,manageWaterlogged);
-                                    }else {
-                                        placeBlock(minecraftWorld, x, y, h-1, plant.getPreferFoundation(),leafDecayMode,waterLoggedLeaves,connectBlocks,manageWaterlogged);
-                                    }
+                                    placeBlock(minecraftWorld, x, y, h-1, plant.getPreferFoundation(),leafDecayMode,waterLoggedLeaves,connectBlocks,manageWaterlogged);
                                     renderObject(minecraftWorld, dimension, platform, plant, x, y, h, false);
                                 });
                             }else {
