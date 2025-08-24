@@ -1,0 +1,19 @@
+{
+  "requires": {
+    "params_num": 1
+  },
+  "data": [
+    {
+      "block":"@0",
+      "properties": {
+        "half": "lower"
+      }
+    },
+    {
+      "block":"@0",
+      "properties": {
+        "half": "upper"
+      }
+    }
+  ]
+}

@@ -10,6 +10,266 @@
     "encoder_v": "beta-1.0"
   },
   "Biomes O' Plenty": {
+    "Flowers": {
+      "rose": {
+        "block": "biomesoplenty:rose"
+      },
+      "violet": {
+        "block": "biomesoplenty:violet"
+      },
+      "lavender": {
+        "block": "biomesoplenty:lavender"
+      },
+      "tall lavender":{
+        "data": [
+          {
+            "block":"biomesoplenty:tall_lavender",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block":"biomesoplenty:tall_lavender",
+            "properties": {
+              "half": "upper"
+            }
+          }
+        ]
+      },
+      "blue hydrangea":{
+        "data": [
+          {
+            "block":"biomesoplenty:blue_hydrangea",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block":"biomesoplenty:blue_hydrangea",
+            "properties": {
+              "half": "upper"
+            }
+          }
+        ]
+      },
+      "wildflower": {
+        "block": "biomesoplenty:wildflower"
+      },
+      "goldenrod":{
+        "data": [
+          {
+            "block":"biomesoplenty:goldenrod",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block":"biomesoplenty:goldenrod",
+            "properties": {
+              "half": "upper"
+            }
+          }
+        ]
+      },
+      "orange cosmos": {
+        "block": "biomesoplenty:orange_cosmos"
+      },
+      "pink daffodil": {
+        "block": "biomesoplenty:pink_daffodil"
+      },
+      "pink hibiscus": {
+        "block": "biomesoplenty:pink_hibiscus"
+      },
+      "white petals":{
+        "block":"biomesoplenty:white_petals",
+        "properties": {
+          "flower_amount": [1,2,3,4],
+          "facing": ["north","south","east","west"]
+        }
+      },
+      "icy iris":{
+        "data": [
+          {
+            "block":"biomesoplenty:icy_iris",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block":"biomesoplenty:icy_iris",
+            "properties": {
+              "half": "upper"
+            }
+          }
+        ]
+      },
+      "glowflower": {
+        "block": "biomesoplenty:glowflower"
+      },
+      "wilted lily": {
+        "block": "biomesoplenty:wilted_lily"
+      },
+      "burning blossom": {
+        "block": "biomesoplenty:burning_blossom"
+      }
+    },
+    "Foliage Plant": {
+      "sprout": {
+        "block": "biomesoplenty:sprout"
+      },
+      "bush": {
+        "block": "biomesoplenty:bush"
+      },
+      "high grass": {
+        "settings": {
+          "ui_properties": {
+            "height": {
+              "type": "range",
+              "max": 10,
+              "min": 1,
+              "default": "2~3"
+            }
+          }
+        },
+        "data": [
+          {
+            "block": "biomesoplenty:high_grass_plant",
+            "times": "#height"
+          },
+          {
+            "block": "biomesoplenty:high_grass",
+            "properties": {
+              "age": "25"
+            }
+          }
+        ]
+      },
+      "clover":{
+        "block":"biomesoplenty:clover",
+        "properties": {
+          "flower_amount": [1,2,3,4],
+          "facing": ["north","south","east","west"]
+        }
+      },
+      "huge clover petal": {
+        "TODO": "TODO",
+        "block": "biomesoplenty:huge_clover_petal"
+      },
+      "tundra shrub": {
+        "block": "biomesoplenty:tundra_shrub"
+      },
+      "barley":{
+        "data": [
+          {
+            "block":"biomesoplenty:barley",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block":"biomesoplenty:barley",
+            "properties": {
+              "half": "upper"
+            }
+          }
+        ]
+      }
+    },
+    "Psammophytes": {
+      "desert grass": {
+        "block": "biomesoplenty:desert_grass"
+      },
+      "tiny cactus": {
+        "block": "biomesoplenty:tiny_cactus"
+      },
+      "dune grass": {
+        "block": "biomesoplenty:dune_grass"
+      },
+      "dead grass": {
+        "block": "biomesoplenty:dead_grass"
+      },
+      "sea oats":{
+        "data": [
+          {
+            "block":"biomesoplenty:sea_oats",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block":"biomesoplenty:sea_oats",
+            "properties": {
+              "half": "upper"
+            }
+          }
+        ]
+      }
+    },
+    "Hygrophyte": {
+      "cattail":{
+        "data": [
+          {
+            "block":"biomesoplenty:cattail",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block":"biomesoplenty:cattail",
+            "properties": {
+              "half": "upper"
+            }
+          }
+        ]
+      },
+      "water grass":{
+        "TODO": "TODO",
+        "habit": "submerged",
+        "data": [
+          {
+            "block":"biomesoplenty:watergrass",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block":"biomesoplenty:watergrass",
+            "properties": {
+              "half": "upper",
+              "waterlogged": "false"
+            }
+          }
+        ]
+      },
+      "reed":{
+        "TODO": "TODO",
+        "habit": "submerged",
+        "data": [
+          {
+            "block":"biomesoplenty:reed",
+            "properties": {
+              "half": "lower"
+            }
+          },
+          {
+            "block":"biomesoplenty:reed",
+            "properties": {
+              "half": "upper",
+              "waterlogged": "false"
+            }
+          }
+        ]
+      },
+      "water lily": {
+        "habit": "floating",
+        "block": "biomesoplenty:waterlily"
+      },
+      "huge lily pad": {
+        "TODO": "TODO",
+        "habit": "floating",
+        "block": "biomesoplenty:huge_lily_pad"
+      }
+    },
     "Visceral Heap": {
       "eye bulb":{
         "data": [
@@ -184,6 +444,68 @@
             }
           }
         ]
+      }
+    },
+    "Saplings And Leaf Piles": {
+      "flowering oak sapling": {
+        "block": "biomesoplenty:flowering_oak_sapling"
+      },
+      "snowblossom sapling": {
+        "block": "biomesoplenty:snowblossom_sapling"
+      },
+      "rainbow birch sapling": {
+        "block": "biomesoplenty:rainbow_birch_sapling"
+      },
+      "fir sapling": {
+        "block": "biomesoplenty:fir_sapling"
+      },
+      "pine sapling": {
+        "block": "biomesoplenty:pine_sapling"
+      },
+      "red maple sapling": {
+        "block": "biomesoplenty:red_maple_sapling"
+      },
+      "red maple sapling leaf pile": {
+        "block": "biomesoplenty:red_maple_leaf_pile"
+      },
+      "orange maple sapling": {
+        "block": "biomesoplenty:orange_maple_sapling"
+      },
+      "orange maple sapling leaf pile": {
+        "block": "biomesoplenty:orange_maple_leaf_pile"
+      },
+      "yellow maple sapling": {
+        "block": "biomesoplenty:red_maple_sapling"
+      },
+      "yellow maple sapling leaf pile": {
+        "block": "biomesoplenty:yellow_maple_leaf_pile"
+      },
+      "redwood sapling": {
+        "block": "biomesoplenty:redwood_sapling"
+      },
+      "mahogany sapling": {
+        "block": "biomesoplenty:mahogany_sapling"
+      },
+      "jacaranda sapling": {
+        "block": "biomesoplenty:jacaranda_sapling"
+      },
+      "palm sapling": {
+        "block": "biomesoplenty:palm_sapling"
+      },
+      "willow sapling": {
+        "block": "biomesoplenty:willow_sapling"
+      },
+      "dead sapling": {
+        "block": "biomesoplenty:dead_sapling"
+      },
+      "magic sapling": {
+        "block": "biomesoplenty:magic_sapling"
+      },
+      "umbran sapling": {
+        "block": "biomesoplenty:umbran_sapling"
+      },
+      "hellbark sapling": {
+        "block": "biomesoplenty:hellbark_sapling"
       }
     },
     "Uncategorized": {

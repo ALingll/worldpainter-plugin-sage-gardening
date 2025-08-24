@@ -1,12 +1,11 @@
 package org.cti.wpplugin.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class JsonUtils {
 
@@ -63,5 +62,36 @@ public class JsonUtils {
 
     public static Optional<JsonNode> optionalGet(JsonNode jsonNode, String key){
         return Optional.ofNullable(jsonNode.get(key));
+    }
+
+    public static JsonNode mergeObject(JsonNode a, JsonNode b) {
+        if (!(a instanceof ObjectNode) || !(b instanceof ObjectNode)) {
+            throw new IllegalArgumentException("Merge target must be Object type.");
+        }
+        // 先深拷贝 A
+        ObjectNode result = ((ObjectNode) a).deepCopy();
+        ObjectNode source = (ObjectNode) b;
+
+        Iterator<Map.Entry<String, JsonNode>> fields = source.fields();
+        while (fields.hasNext()) {
+            Map.Entry<String, JsonNode> entry = fields.next();
+            result.set(entry.getKey(), entry.getValue());
+        }
+        return result;
+    }
+
+    public static void mergeTo(JsonNode a, JsonNode b) {
+        if (!(a instanceof ObjectNode) || !(b instanceof ObjectNode)) {
+            throw new IllegalArgumentException("Merge target must be Object type.");
+        }
+
+        ObjectNode target = (ObjectNode) a;
+        ObjectNode source = (ObjectNode) b;
+
+        Iterator<Map.Entry<String, JsonNode>> fields = source.fields();
+        while (fields.hasNext()) {
+            Map.Entry<String, JsonNode> entry = fields.next();
+            target.set(entry.getKey(), entry.getValue());
+        }
     }
 }

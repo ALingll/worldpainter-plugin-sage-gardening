@@ -1,0 +1,10 @@
+{
+  "requires": {
+    "params_num": 1
+  },
+  "block":"@0",
+  "properties": {
+    "flower_amount": [1,2,3,4],
+    "facing": ["north","south","east","west"]
+  }
+}

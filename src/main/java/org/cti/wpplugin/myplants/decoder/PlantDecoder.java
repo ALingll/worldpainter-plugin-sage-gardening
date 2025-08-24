@@ -14,6 +14,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.StreamSupport;
 
+import static org.cti.wpplugin.myplants.decoder.TemplateProvider.loadTemplate;
 import static org.cti.wpplugin.utils.FormatString.asPercent;
 import static org.cti.wpplugin.utils.FormatString.asRange;
 import static org.cti.wpplugin.utils.JsonUtils.*;
@@ -30,6 +31,7 @@ public class PlantDecoder {
     public static final String DATA_TAG = "data";
     public static final String ICON_TAG = "icon";
     public static final String HABIT_TAG = "habit";
+    public static final String TEMPLATE_TAG = "template";
     public static final String SETTINGS_TAG = "settings";
     public static final String GLOBAL_PROPERTIES_TAG = "global_properties";
     public static final String UI_PROPERTIES_TAG = "ui_properties";
@@ -44,10 +46,11 @@ public class PlantDecoder {
 
     private static Material getMaterial(String s){
         try {
-            Material m = Material.get(s);
+            Material m = MaterialDecoder.getMaterial(s);
+            System.out.println(m);
             return m;
         }catch (IllegalArgumentException e){
-            throw new IllegalArgumentException("Can't create material by name:"+s);
+            throw new IllegalArgumentException("Can't create material by name: "+s);
         }
     }
 
@@ -138,6 +141,7 @@ public class PlantDecoder {
                 }
                 return result;
             }else if(jsonNode.isObject()){
+                loadTemplate(jsonNode);
                 Pair<Set<Material>, Material> foundations = loadFoundationsByJson(jsonNode);
                 AtomicReference<String> icon = new AtomicReference<>();
                 AtomicReference<PlantHabit> habit = new AtomicReference<>(PlantHabit.TERRESTRIAL);

@@ -1,0 +1,27 @@
+{
+  "requires": {
+    "params_num": 2
+  },
+  "settings": {
+    "ui_properties": {
+      "height": {
+        "type": "range",
+        "max": 24,
+        "min": 0,
+        "default": "2~3"
+      }
+    }
+  },
+  "data": [
+    {
+      "block": "@0",
+      "times": "#height"
+    },
+    {
+      "block": "@1",
+      "properties": {
+        "age": 25
+      }
+    }
+  ]
+}
