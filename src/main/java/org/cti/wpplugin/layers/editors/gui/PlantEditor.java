@@ -35,10 +35,15 @@ public class PlantEditor extends ValueEditor<CustomPlant> {
     private final JPanel extraComponentsPanel;
     private boolean expanded = false;
     private final Map<String, ValueEditor> extraComponents = new HashMap<>();
+    private final CustomPlant refPlant;
+    private JToolTip tip;
 
     public PlantEditor(String id, String name, CustomPlant plant) {
         this.id = id;
         this.name = name;
+        this.refPlant = plant;
+
+        setToolTipText(" ");
 
         WeightItem weightItem = new WeightItem(id,name);
         weightItem.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
@@ -48,6 +53,7 @@ public class PlantEditor extends ValueEditor<CustomPlant> {
 
         // 第一排
         JPanel firstRow = new JPanel(new BorderLayout(5, 5));
+        firstRow.setOpaque(false);
         firstRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
         // 按钮 A（箭头）
@@ -65,7 +71,7 @@ public class PlantEditor extends ValueEditor<CustomPlant> {
 
         // 图标（如果 icon 为 null，则放空白占位）
         //TODO
-        Icon icon= IconLoader.getInstance().getIcon(plant.getIcon());
+        Icon icon= plant.getIcon();
         if (icon != null) {
             iconLabel = new JLabel(icon);
         } else {
@@ -83,6 +89,7 @@ public class PlantEditor extends ValueEditor<CustomPlant> {
         }
         // 第一排布局
         JPanel leftPart = new JPanel();
+        leftPart.setOpaque(false);
         leftPart.setLayout(new BoxLayout(leftPart, BoxLayout.X_AXIS));
         leftPart.add(toggleButton);
         leftPart.add(Box.createHorizontalStrut(5));
@@ -117,6 +124,7 @@ public class PlantEditor extends ValueEditor<CustomPlant> {
         extraComponentsPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
         extraComponentsPanel.setVisible(expanded); // 初始隐藏
+        extraComponentsPanel.setOpaque(false);
         add(extraComponentsPanel);
 
         JPanel panel = new JPanel();
@@ -139,6 +147,7 @@ public class PlantEditor extends ValueEditor<CustomPlant> {
         expanded = !expanded;
         toggleButton.setText(expanded ? "▼" : "▶");
         extraComponentsPanel.setVisible(expanded);
+        extraComponentsPanel.setOpaque(true);
         revalidate();
         repaint();
     }
@@ -149,6 +158,36 @@ public class PlantEditor extends ValueEditor<CustomPlant> {
             extraComponents.get(key).reset(value);
             System.out.println(key+"\t"+value+"\t"+extraComponents.get(key).getClass());
         });
+    }
+
+    @Override
+    public JToolTip createToolTip() {
+        JToolTip tip = new JToolTip() {
+            @Override
+            public Dimension getPreferredSize() {
+                int width = 0, height = 0;
+                for (Component c : getComponents()) {
+                    Dimension d = c.getPreferredSize();
+                    width = Math.max(width, d.width);
+                    height += d.height;
+                }
+                return new Dimension(width + 10, height + 10); // 留一点边距
+            }
+        };
+        tip.setLayout(new BoxLayout(tip, BoxLayout.Y_AXIS));
+
+        String name = refPlant.getName();
+        String desc = refPlant.getDescription();
+
+        if (name != null && !name.isEmpty()) tip.add(new JLabel(name));
+        if (desc != null && !desc.isEmpty()) tip.add(new JLabel(desc));
+
+        Icon icon = refPlant.getIcon();
+        if(icon!=null){
+            icon = resizeIcon(icon,80,80);
+            tip.add(new JLabel(icon));
+        }
+        return tip;
     }
 
     public String getId() {return id;}
@@ -214,11 +253,6 @@ public class PlantEditor extends ValueEditor<CustomPlant> {
             JFrame frame = new JFrame("PlantEditor Demo");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-
-            // 模拟 WeightItem
-
-
-
 
 
             frame.pack();

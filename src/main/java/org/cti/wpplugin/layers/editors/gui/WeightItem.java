@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class WeightItem extends JPanel {
     private String id = null;
@@ -128,13 +129,62 @@ public class WeightItem extends JPanel {
         frame.setSize(300, 100);
         frame.setLayout(new BorderLayout());
 
-        JLabel jLabel = new JLabel("aaa");
-        frame.add(jLabel, BorderLayout.NORTH);
+        JPanel panel = new JPanel(){
+            private Image bgImage = new ImageIcon(
+                    Objects.requireNonNull(getClass().getResource("/org/cti/wpplugin/image/icon/CTI logo.png"))
+            ).getImage();
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
 
-        WeightItem panel = new WeightItem("Item:","bbb");
-        panel.addWeightChangedListener(e->{
+                if (bgImage != null) {
+                    Graphics2D g2d = (Graphics2D) g.create(); // 复制一份 Graphics，避免影响后面绘制
+
+                    // 设置 50% 透明度
+                    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+
+                    int panelW = getWidth();
+                    int panelH = getHeight();
+
+                    int imgW = bgImage.getWidth(this);
+                    int imgH = bgImage.getHeight(this);
+
+                    if (imgW > 0 && imgH > 0) {
+                        // 按 contain 规则缩放居中
+                        double scale = Math.min((double) panelW / imgW, (double) panelH / imgH);
+
+                        int newW = (int) (imgW * scale);
+                        int newH = (int) (imgH * scale);
+
+                        int x = (panelW - newW) / 2;
+                        int y = (panelH - newH) / 2;
+
+                        g2d.drawImage(bgImage, x, y, newW, newH, this);
+                    }
+
+                    g2d.dispose(); // 用完要释放
+                }
+            }
+        };
+
+        JLabel jLabel = new JLabel("aaa");
+
+        WeightItem weightItem = new WeightItem("Item:","bbb");
+        weightItem.addWeightChangedListener(e->{
             jLabel.setText(String.valueOf(((WeightItem)e.getSource()).getValue()));
         });
+        WeightItem weightItem1 = new WeightItem("Item:","bbb");
+        WeightItem weightItem2 = new WeightItem("Item:","bbb");
+        WeightItem weightItem3 = new WeightItem("Item:","bbb");
+        WeightItem weightItem4 = new WeightItem("Item:","bbb");
+
+
+        panel.add(jLabel);
+        panel.add(weightItem);
+        panel.add(weightItem1);
+        panel.add(weightItem2);
+        panel.add(weightItem3);
+        panel.add(weightItem4);
         frame.add(panel, BorderLayout.CENTER);
 
         frame.setVisible(true);

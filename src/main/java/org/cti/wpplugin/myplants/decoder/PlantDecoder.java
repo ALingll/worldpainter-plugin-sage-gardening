@@ -47,7 +47,6 @@ public class PlantDecoder {
     private static Material getMaterial(String s){
         try {
             Material m = MaterialDecoder.getMaterial(s);
-            System.out.println(m);
             return m;
         }catch (IllegalArgumentException e){
             throw new IllegalArgumentException("Can't create material by name: "+s);
@@ -93,7 +92,7 @@ public class PlantDecoder {
                             .ifPresentOrElse(
                                     id -> {
                                         if(parent == null) throw new IllegalArgumentException("Parent is null.");
-                                        //System.out.println(id+" "+parent.getNamedVar(id, AbstractIntVar.class));
+
                                         times.set(parent.getNamedVar(id, AbstractIntVar.class));
                                     },
                                     () -> {
@@ -145,6 +144,10 @@ public class PlantDecoder {
                 Pair<Set<Material>, Material> foundations = loadFoundationsByJson(jsonNode);
                 AtomicReference<String> icon = new AtomicReference<>();
                 AtomicReference<PlantHabit> habit = new AtomicReference<>(PlantHabit.TERRESTRIAL);
+                AtomicReference<String> pdesc = new AtomicReference<>("");
+                optionalGet(jsonNode,DESCRIPTION_TAG).ifPresent(d->{
+                    pdesc.set(d.textValue());
+                });
                 optionalGet(jsonNode,ICON_TAG).ifPresent(n->{
                     icon.set(n.textValue());
                 });
@@ -235,19 +238,20 @@ public class PlantDecoder {
                     result.setState(state.get());
                     result.setIcon(icon.get());
                     result.setHabit(habit.get());
+                    result.setDescription(pdesc.get());
                     return result.setFoundations(foundations);
                 }else {
                     CustomPlant customPlant = new CustomPlant(name,domain,loadPlantElementByJson(jsonNode,null)).setFoundations(foundations);
                     customPlant.setIcon(icon.get());
                     customPlant.setHabit(habit.get());
+                    customPlant.setDescription(pdesc.get());
                     return customPlant;
                 }
             }else {
                 throw new IllegalArgumentException("Unsupported json format as CustomPlant:"+jsonNode.toPrettyString());
             }
         }catch (IllegalArgumentException e){
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 

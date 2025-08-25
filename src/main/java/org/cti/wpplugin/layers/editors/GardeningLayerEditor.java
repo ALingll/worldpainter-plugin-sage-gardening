@@ -277,7 +277,43 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
             }
         }
         //JPanel panel = new JPanel();
-        JPanel panel = new JPanel(new GridBagLayout());
+        JPanel panel = new JPanel(new GridBagLayout()){
+            private Image bgImage = new ImageIcon(
+                    Objects.requireNonNull(getClass().getResource("/org/cti/wpplugin/image/icon/CTI logo.png"))
+            ).getImage();
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+
+                if (bgImage != null) {
+                    Graphics2D g2d = (Graphics2D) g.create(); // 复制一份 Graphics，避免影响后面绘制
+
+                    // 设置 50% 透明度
+                    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+
+                    int panelW = getWidth();
+                    int panelH = getHeight();
+
+                    int imgW = bgImage.getWidth(this);
+                    int imgH = bgImage.getHeight(this);
+
+                    if (imgW > 0 && imgH > 0) {
+                        // 按 contain 规则缩放居中
+                        double scale = Math.min((double) panelW / imgW, (double) panelH / imgH);
+
+                        int newW = (int) (imgW * scale);
+                        int newH = (int) (imgH * scale);
+
+                        int x = (panelW - newW) / 2;
+                        int y = (panelH - newH) / 2;
+
+                        g2d.drawImage(bgImage, x, y, newW, newH, this);
+                    }
+
+                    g2d.dispose(); // 用完要释放
+                }
+            }
+        };
         //panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -287,8 +323,6 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         gbc.gridwidth = GridBagConstraints.REMAINDER; // 占据剩余的所有列
         gbc.anchor = GridBagConstraints.NORTH; // 组件顶部对齐
         gbc.insets = new Insets(5, 1, 1, 5); // 设置组件之间的间距
-
-        //System.out.println(tempLayer.getPlantMap());
 
         Iterator<Map.Entry<String, JsonNode>> fields = content.fields();
         content.fields().forEachRemaining(field->{
@@ -315,6 +349,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
                 }
 
                 PlantEditor plantEditor = new PlantEditor(title+":"+groupName+":"+plantName, plantName, customPlant);
+                plantEditor.setOpaque(false);
                 plantEditor.addWeightChangedListener(e->{
                     tempLayer.setPlant(plantEditor.getId(), ((WeightItem)e.getSource()).getValue());
                     context.settingsChanged();
@@ -328,10 +363,9 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
                 itemMap.put(plantEditor.getId(), plantEditor);
 
                 panel.add(plantEditor,gbc);
-                //panel.add(new JLabel(plantName),gbc);
+
             }
         });
-        //System.out.println("Old layer4:"+layer);
         gbc.weighty = 1; // 让这个组件填充剩余空间
         panel.add(new JPanel(), gbc); // 空白面板，作为占位符
 
@@ -469,23 +503,16 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
 
         saveSettings(layer);
 
-        //System.out.println("Commit layer:"+layer);
         tempLayer = new GardeningLayer();
     }
 
     @Override
     public void setLayer(GardeningLayer layer) {
-        //sayCalled();
-        //System.out.println("Old layer:"+layer);
         super.setLayer(layer);
 
         tempLayer.copyFrom(layer);
-        //System.out.println("New layer1:"+tempLayer);
-        //System.out.println("Old layer1:"+layer);
 
         reset();
-        //System.out.println("New layer2:"+tempLayer);
-        //System.out.println("Old layer2:"+layer);
     }
 
     @Override
@@ -529,11 +556,8 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
             });
 
         });
-        //System.out.println("New layer3:"+tempLayer);
-        //System.out.println("Old layer3:"+layer);
         tempLayer.getPlantMap().forEach((key,value)->{
             itemMap.get(key.getFullName()).set(value);
-            //System.out.println(value);
         });
         textField1.setText(layer.getName());
         paintPicker.setPaint(layer.getPaint());
@@ -548,9 +572,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         if (! isCommitAvailable()) {
             throw new IllegalStateException("Settings invalid or incomplete");
         }
-        //System.out.println("A:"+layer);
         final GardeningLayer previewLayer = saveSettings(null);
-        //System.out.println("B:"+layer);
         return new ExporterSettings() {
             @Override
             public boolean isApplyEverywhere() {

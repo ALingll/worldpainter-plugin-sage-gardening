@@ -75,13 +75,13 @@ public class IconLoader {
                 if(path.exists()){
                     resources.put(name,path);
                 }else {
-                    logger.info("Can't find resource: "+path);
+                    logger.warn("Can't find resource: "+path);
                 }
             });
         });
     }
 
-    public Icon getIcon(String path) {
+    public ImageIcon getIcon(String path) {
         if (path == null || !path.contains("/")) {
             logger.error("Invalid resource path: {}", path);
             return null;
@@ -91,7 +91,7 @@ public class IconLoader {
         String topDir = path.substring(0, path.indexOf('/'));
         File jarFile = resources.get(topDir);
         if (jarFile == null) {
-            logger.error("No jar registered for top-level dir: {}", topDir);
+            logger.warn("No jar registered for top-level dir: {}", topDir);
             return null;
         }
 

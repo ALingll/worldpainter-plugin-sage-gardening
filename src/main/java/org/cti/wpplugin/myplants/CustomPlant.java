@@ -1,6 +1,7 @@
 package org.cti.wpplugin.myplants;
 
 import org.cti.wpplugin.layers.GardeningLayer;
+import org.cti.wpplugin.minecraft.IconLoader;
 import org.cti.wpplugin.myplants.variable.RandomVariable;
 import org.cti.wpplugin.myplants.variable.SingleChoiceVar;
 import org.cti.wpplugin.myplants.variable.UiVariable;
@@ -13,6 +14,7 @@ import org.pepsoft.worldpainter.Dimension;
 import org.pepsoft.worldpainter.exporting.MinecraftWorld;
 import org.pepsoft.worldpainter.objects.WPObject;
 
+import javax.swing.*;
 import javax.vecmath.Point3i;
 import java.io.Serializable;
 import java.util.*;
@@ -24,6 +26,7 @@ import static org.cti.wpplugin.utils.debug.DebugUtils.classStr;
 public class CustomPlant implements WPObject {
     private String name;
     private String domain;
+    private String description = "";
     private ArrayList<PlantElement> palette = new ArrayList<>();
     private Set<Material> foundations = new HashSet<>();
     private Material prefer_foundation;
@@ -35,6 +38,8 @@ public class CustomPlant implements WPObject {
     private Random random = null;
     private int[][][] blockSpace;
     private State state = new State();
+    private String icon = "";
+    private PlantHabit habit = PlantHabit.TERRESTRIAL;
 
     public PlantHabit getHabit() {
         return habit;
@@ -44,17 +49,15 @@ public class CustomPlant implements WPObject {
         this.habit = habit;
     }
 
-    private PlantHabit habit = PlantHabit.TERRESTRIAL;
-
-    public String getIcon() {
-        return icon;
+    public ImageIcon getIcon() {
+        if(icon==null)
+            return null;
+        return IconLoader.getInstance().getIcon(icon);
     }
 
     public void setIcon(String icon) {
         this.icon = icon;
     }
-
-    private String icon = "";
 
     public State getState() {
         return state;
@@ -62,6 +65,14 @@ public class CustomPlant implements WPObject {
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public CustomPlant(String name, String domain, List<PlantElement> palette, boolean enableRandom) {
@@ -155,18 +166,6 @@ public class CustomPlant implements WPObject {
         }
         return clazz.cast(variable);
     }
-
-//    public CustomPlant setUiProperties(String id, Variable variable){
-//        uiProperties.put(id,variable);
-//        return this;
-//    }
-
-//    public CustomPlant linkAllGlobalProperties(){
-//        variableProperties.forEach((key, value)->{
-//            palette.forEach(item->item.linkGlobalSettings(key,value.getVariable()));
-//        });
-//        return this;
-//    }
 
     public CustomPlant nextObject(Random random){
         if(!enableRandom)
@@ -290,15 +289,6 @@ public class CustomPlant implements WPObject {
         CustomPlant p = (CustomPlant) o;
         return domain.equals(p.domain) && name.equals(p.name);
     }
-
-//    @Override
-//    public String toString(){
-//        StringBuilder stringBuilder = new StringBuilder();
-//        stringBuilder.append(getFullName()+":"+"\n");
-//        stringBuilder.append("global_properties:"+ globalVariables.toString()+"\n");
-//        stringBuilder.append("palette:"+palette.toString());
-//        return stringBuilder.toString();
-//    }
 
     public static CustomPlantBuilder getBuilder(){return new CustomPlantBuilder();}
 

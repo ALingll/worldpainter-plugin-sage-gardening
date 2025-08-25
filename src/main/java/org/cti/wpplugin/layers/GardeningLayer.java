@@ -41,9 +41,6 @@ public class GardeningLayer extends CustomLayer {
         BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();
 
-        // 抗锯齿，让图形更平滑
-        //g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
         // 1. 背景：蓝色
         g.setColor(new Color(91,170,223));
         g.fillRect(0, 0, size, size);
