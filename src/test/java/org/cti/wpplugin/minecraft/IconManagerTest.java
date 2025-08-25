@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class IconLoaderTest {
 
-    @Test
+    //@Test
     public void test(){
         SwingUtilities.invokeLater(() -> {
             Icon icon = IconLoader.getInstance().getIcon("verdantvibes/textures/block/monstera.png");

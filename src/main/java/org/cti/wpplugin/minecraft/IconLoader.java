@@ -36,20 +36,37 @@ public class IconLoader {
     }
 
     private IconLoader(){
-        File settingsDir = new File(Configuration.getConfigDir(), "plugin_data/gardening_layer/settings.json");
-        if (!settingsDir.exists()) {
-            boolean created = settingsDir.mkdirs();
+        File settingsFile = new File(Configuration.getConfigDir(), "plugin_data/gardening_layer/settings.json");
+
+        // 确保父目录存在
+        File parentDir = settingsFile.getParentFile();
+        if (!parentDir.exists()) {
+            boolean created = parentDir.mkdirs();
             if (!created) {
-                System.err.println("Can`t create: " + settingsDir.getAbsolutePath());
+                logger.error("Can't create directory: " + parentDir.getAbsolutePath());
                 return;
             }
         }
+
+        // 确保文件存在
+        if (!settingsFile.exists()) {
+            try {
+                if (!settingsFile.createNewFile()) {
+                    logger.error("Can't create file (already exists?): " + settingsFile.getAbsolutePath());
+                }
+            } catch (IOException e) {
+                logger.error("Can't create file: " + settingsFile.getAbsolutePath(), e);
+                return;
+            }
+        }
+
         ObjectMapper mapper = new ObjectMapper();
         JsonNode settings;
         try {
-            settings = mapper.readTree(settingsDir);   // 读取 JSON 并解析为 JsonNode
+            settings = mapper.readTree(settingsFile);   // 读取 JSON 并解析为 JsonNode
         } catch (IOException ex) {
-            throw new RuntimeException(ex);
+            logger.error("Json format error: "+ settingsFile);
+            return;
         }
         optionalGet(settings,RESOURCES_TAG).ifPresent(node->{
             node.propertyStream().forEach(entry->{
