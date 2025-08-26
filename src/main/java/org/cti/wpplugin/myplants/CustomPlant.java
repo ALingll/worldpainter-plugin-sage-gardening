@@ -52,6 +52,14 @@ public class CustomPlant implements WPObject {
     public ImageIcon getIcon() {
         if(icon==null)
             return null;
+        if(icon.equals("default_block")){
+            Material material = palette.get(0).getMaterial();
+            icon = material.namespace+"/textures/block/"+ Arrays.stream(material.name.split(":")).toList().get(1)+".png";
+        }
+        if(icon.equals("default")||icon.equals("default_item")){
+            Material material = palette.get(0).getMaterial();
+            icon = material.namespace+"/textures/item/"+ Arrays.stream(material.name.split(":")).toList().get(1)+".png";
+        }
         return IconLoader.getInstance().getIcon(icon);
     }
 

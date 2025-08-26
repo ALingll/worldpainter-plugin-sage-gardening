@@ -73,6 +73,7 @@ public class PlantEditor extends ValueEditor<CustomPlant> {
         //TODO
         Icon icon= plant.getIcon();
         if (icon != null) {
+            icon = resizeIcon(icon,24,24);
             iconLabel = new JLabel(icon);
         } else {
             iconLabel = new JLabel();

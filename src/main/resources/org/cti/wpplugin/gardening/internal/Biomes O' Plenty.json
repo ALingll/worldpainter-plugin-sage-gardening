@@ -12,15 +12,19 @@
   "Biomes O' Plenty": {
     "Flowers": {
       "rose": {
+        "icon": "default_block",
         "block": "biomesoplenty:rose"
       },
       "violet": {
+        "icon": "default_block",
         "block": "biomesoplenty:violet"
       },
       "lavender": {
+        "icon": "default_block",
         "block": "biomesoplenty:lavender"
       },
       "tall lavender":{
+        "icon": "biomesoplenty/textures/block/tall_lavender_top.png",
         "data": [
           {
             "block":"biomesoplenty:tall_lavender",
@@ -37,6 +41,7 @@
         ]
       },
       "blue hydrangea":{
+        "icon": "biomesoplenty/textures/block/blue_hydrangea_top.png",
         "data": [
           {
             "block":"biomesoplenty:blue_hydrangea",
@@ -53,9 +58,11 @@
         ]
       },
       "wildflower": {
+        "icon": "default_block",
         "block": "biomesoplenty:wildflower"
       },
       "goldenrod":{
+        "icon": "biomesoplenty/textures/block/goldenrod_top.png",
         "data": [
           {
             "block":"biomesoplenty:goldenrod",
@@ -72,15 +79,19 @@
         ]
       },
       "orange cosmos": {
+        "icon": "default_block",
         "block": "biomesoplenty:orange_cosmos"
       },
       "pink daffodil": {
+        "icon": "default_block",
         "block": "biomesoplenty:pink_daffodil"
       },
       "pink hibiscus": {
+        "icon": "default_block",
         "block": "biomesoplenty:pink_hibiscus"
       },
       "white petals":{
+        "icon": "default_block",
         "block":"biomesoplenty:white_petals",
         "properties": {
           "flower_amount": [1,2,3,4],
@@ -88,6 +99,7 @@
         }
       },
       "icy iris":{
+        "icon": "biomesoplenty/textures/block/icy_iris_top.png",
         "data": [
           {
             "block":"biomesoplenty:icy_iris",
@@ -104,23 +116,29 @@
         ]
       },
       "glowflower": {
+        "icon": "default_block",
         "block": "biomesoplenty:glowflower"
       },
       "wilted lily": {
+        "icon": "default_block",
         "block": "biomesoplenty:wilted_lily"
       },
       "burning blossom": {
+        "icon": "default_block",
         "block": "biomesoplenty:burning_blossom"
       }
     },
     "Foliage Plant": {
       "sprout": {
+        "icon": "default_block",
         "block": "biomesoplenty:sprout"
       },
       "bush": {
+        "icon": "default_block",
         "block": "biomesoplenty:bush"
       },
       "high grass": {
+        "icon": "default_block",
         "settings": {
           "ui_properties": {
             "height": {
@@ -145,6 +163,7 @@
         ]
       },
       "clover":{
+        "icon": "default_block",
         "block":"biomesoplenty:clover",
         "properties": {
           "flower_amount": [1,2,3,4],
@@ -152,13 +171,16 @@
         }
       },
       "huge clover petal": {
+        "icon": "default",
         "TODO": "TODO",
         "block": "biomesoplenty:huge_clover_petal"
       },
       "tundra shrub": {
+        "icon": "default_block",
         "block": "biomesoplenty:tundra_shrub"
       },
       "barley":{
+        "icon": "default_item",
         "data": [
           {
             "block":"biomesoplenty:barley",
@@ -177,18 +199,23 @@
     },
     "Psammophytes": {
       "desert grass": {
+        "icon": "default_block",
         "block": "biomesoplenty:desert_grass"
       },
       "tiny cactus": {
+        "icon": "default_block",
         "block": "biomesoplenty:tiny_cactus"
       },
       "dune grass": {
+        "icon": "default_block",
         "block": "biomesoplenty:dune_grass"
       },
       "dead grass": {
+        "icon": "default_block",
         "block": "biomesoplenty:dead_grass"
       },
       "sea oats":{
+        "icon": "default_item",
         "data": [
           {
             "block":"biomesoplenty:sea_oats",
@@ -207,6 +234,7 @@
     },
     "Hygrophyte": {
       "cattail":{
+        "icon": "default_item",
         "data": [
           {
             "block":"biomesoplenty:cattail",
@@ -223,6 +251,7 @@
         ]
       },
       "water grass":{
+        "icon": "default_item",
         "TODO": "TODO",
         "habit": "submerged",
         "data": [
@@ -242,6 +271,7 @@
         ]
       },
       "reed":{
+        "icon": "default_item",
         "TODO": "TODO",
         "habit": "submerged",
         "data": [
@@ -261,10 +291,12 @@
         ]
       },
       "water lily": {
+        "icon": "default_item",
         "habit": "floating",
         "block": "biomesoplenty:waterlily"
       },
       "huge lily pad": {
+        "icon": "default_item",
         "TODO": "TODO",
         "habit": "floating",
         "block": "biomesoplenty:huge_lily_pad"
@@ -272,6 +304,7 @@
     },
     "Visceral Heap": {
       "eye bulb":{
+        "icon": "default_item",
         "data": [
           {
             "block":"biomesoplenty:eyebulb",
@@ -288,9 +321,11 @@
         ]
       },
       "hair": {
+        "icon": "default_item",
         "block":"biomesoplenty:hair"
       },
       "flesh tendons": {
+        "icon": "biomesoplenty/textures/block/flesh_tendons.png",
         "settings": {
           "ui_properties": {
             "height": {
@@ -317,6 +352,7 @@
     },
     "Erupting Inferno": {
       "brim stone cluster":{
+        "icon": "biomesoplenty/textures/block/brimstone_cluster_bottom.png",
         "data": [
           {
             "block":"biomesoplenty:brimstone_cluster",
@@ -332,40 +368,54 @@
           }
         ]
       },
+      "brim stone bud":{
+        "icon": "default_block",
+        "block": "biomesoplenty:brimstone_bud"
+      },
       "brim stone fumarole":{
+        "icon": "default_block",
         "block": "biomesoplenty:brimstone_fumarole"
       }
     },
     "Withered Abyss": {
       "black stone spines":{
+        "icon": "default_block",
         "block": "biomesoplenty:blackstone_spines"
       },
       "black stone bulb":{
+        "icon": "default_block",
         "block": "biomesoplenty:blackstone_bulb"
       }
     },
     "Crystalline Chasm": {
       "rose quartz cluster": {
+        "icon": "default_block",
         "block": "biomesoplenty:rose_quartz_cluster"
       },
       "large rose quartz bud": {
+        "icon": "default_block",
         "block": "biomesoplenty:large_rose_quartz_bud"
       },
       "medium rose quartz bud": {
+        "icon": "default_block",
         "block": "biomesoplenty:medium_rose_quartz_bud"
       },
       "small rose quartz bud": {
+        "icon": "default_block",
         "block": "biomesoplenty:small_rose_quartz_bud"
       }
     },
     "Glowing Grotto": {
       "glowshroom": {
+        "icon": "default_block",
         "block": "biomesoplenty:glowshroom"
       },
       "glowing moss carpet": {
+        "icon": "biomesoplenty/textures/block/glowing_moss_block.png",
         "block": "biomesoplenty:glowing_moss_carpet"
       },
       "glowworm silk": {
+        "icon": "biomesoplenty/textures/block/glowworm_silk.png",
         "settings": {
           "ui_properties": {
             "height": {
@@ -392,9 +442,11 @@
     },
     "Spider Nest": {
       "spider egg": {
+        "icon": "default_item",
         "block": "biomesoplenty:spider_egg"
       },
       "hanging cobweb": {
+        "icon": "biomesoplenty/textures/block/hanging_cobweb.png",
         "settings": {
           "ui_properties": {
             "height": {
@@ -419,6 +471,7 @@
         ]
       },
       "webbing": {
+        "icon": "default_block",
         "TODO": "TODO",
         "settings": {
           "ui_properties": {
@@ -448,68 +501,89 @@
     },
     "Saplings And Leaf Piles": {
       "flowering oak sapling": {
+        "icon": "default_block",
         "block": "biomesoplenty:flowering_oak_sapling"
       },
       "snowblossom sapling": {
+        "icon": "default_block",
         "block": "biomesoplenty:snowblossom_sapling"
       },
       "rainbow birch sapling": {
+        "icon": "default_block",
         "block": "biomesoplenty:rainbow_birch_sapling"
       },
       "fir sapling": {
+        "icon": "default_block",
         "block": "biomesoplenty:fir_sapling"
       },
       "pine sapling": {
+        "icon": "default_block",
         "block": "biomesoplenty:pine_sapling"
       },
       "red maple sapling": {
+        "icon": "default_block",
         "block": "biomesoplenty:red_maple_sapling"
       },
       "red maple sapling leaf pile": {
+        "icon": "default_block",
         "block": "biomesoplenty:red_maple_leaf_pile"
       },
       "orange maple sapling": {
+        "icon": "default_block",
         "block": "biomesoplenty:orange_maple_sapling"
       },
       "orange maple sapling leaf pile": {
+        "icon": "default_block",
         "block": "biomesoplenty:orange_maple_leaf_pile"
       },
       "yellow maple sapling": {
+        "icon": "default_block",
         "block": "biomesoplenty:red_maple_sapling"
       },
       "yellow maple sapling leaf pile": {
+        "icon": "default_block",
         "block": "biomesoplenty:yellow_maple_leaf_pile"
       },
       "redwood sapling": {
+        "icon": "default_block",
         "block": "biomesoplenty:redwood_sapling"
       },
       "mahogany sapling": {
+        "icon": "default_block",
         "block": "biomesoplenty:mahogany_sapling"
       },
       "jacaranda sapling": {
+        "icon": "default_block",
         "block": "biomesoplenty:jacaranda_sapling"
       },
       "palm sapling": {
+        "icon": "default_block",
         "block": "biomesoplenty:palm_sapling"
       },
       "willow sapling": {
+        "icon": "default_block",
         "block": "biomesoplenty:willow_sapling"
       },
       "dead sapling": {
+        "icon": "default_block",
         "block": "biomesoplenty:dead_sapling"
       },
       "magic sapling": {
+        "icon": "default_block",
         "block": "biomesoplenty:magic_sapling"
       },
       "umbran sapling": {
+        "icon": "default_block",
         "block": "biomesoplenty:umbran_sapling"
       },
       "hellbark sapling": {
+        "icon": "default_block",
         "block": "biomesoplenty:hellbark_sapling"
       }
     },
     "Uncategorized": {
       "toadstool": {
+        "icon": "default_block",
         "block": "biomesoplenty:toadstool"
       }
     }

@@ -279,7 +279,7 @@ public class GardeningLayerEditor extends AbstractLayerEditor<GardeningLayer> {
         //JPanel panel = new JPanel();
         JPanel panel = new JPanel(new GridBagLayout()){
             private Image bgImage = new ImageIcon(
-                    Objects.requireNonNull(getClass().getResource("/org/cti/wpplugin/image/icon/CTI logo.png"))
+                    Objects.requireNonNull(getClass().getResource("/org/cti/wpplugin/image/icon/CTI logo-en.png"))
             ).getImage();
             @Override
             protected void paintComponent(Graphics g) {
